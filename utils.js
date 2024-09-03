@@ -9,7 +9,7 @@
 
 function getContext(canvas) {
     if (!canvas) {
-        console.error('Can not retrieve canvas');
+        console.error('Browser can not retrieve canvas');
         return;
     }
 
