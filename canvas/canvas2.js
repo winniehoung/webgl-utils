@@ -13,18 +13,16 @@ function main() {
     // shader programs
     const vShaderSrc = 'attribute vec4 vPosition; void main(void){gl_Position=vPosition; gl_PointSize=10.0;}';
 
-    const fShaderSrc = 'precision mediump float; uniform vec4 fColor; void main(void){gl_FragColor=vec4(0.98,0.64,0.54,1.0);}';
+    const fShaderSrc = 'precision mediump float; uniform vec4 fColor; void main(void){gl_FragColor=fColor;}';
 
     // initialize shaders
     if (!initShaderProgram(context, vShaderSrc, fShaderSrc)) {
         console.error('Failed to initialize shaders.');
         return;
     }
-
-    // prepare shader variable
-    const fLocation=context.getUniformLocation(context.shaderProgram, )
-
+    // render triangle vertices
     render(context);
+
 }
 function render(context) {
     const data = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
@@ -35,8 +33,11 @@ function render(context) {
         return false;
     }
 
-    clearCanvas(context, [0.799,0.799,0.799, 1.0]);
-    console.log(data.length);
+    // assign fragment shader
+    const fLocation = context.getUniformLocation(context.shaderProgram, 'fColor');
+    context.uniform4f(fLocation, 1.0, 0.5, 0.31, 1.0);
+
+    clearCanvas(context, [0.799, 0.799, 0.799, 1.0]);
     context.drawArrays(context.POINTS, 0, data.length / nComponents);
 }
 
