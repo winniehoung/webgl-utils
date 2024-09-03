@@ -21,50 +21,55 @@ function main() {
         return;
     }
 
-    // prepare shader variables 
+    // prepare shader variables, grab memory location 
     const vLocation = context.getAttribLocation(context.shaderProgram, 'vPosition');
     const fLocation = context.getUniformLocation(context.shaderProgram, 'fColor');
 
     // clear canvas
-    clearCanvas(context, [0.6, 0.7, 1.0, 1.0]);
+    clearCanvas(context, [0.8, 0.8, 0.8, 1.0]);
 
-    // handle click event
-    canvas.onmousedown = function (event) { click(event, canvas, context, vLocation, fLocation); }
+    // handle click event on DOM element
+    const clickHandler = createClickHandler();
+
+    canvas.addEventListener('click', function (event) { clickHandler(event, canvas, context, vLocation, fLocation); });
+
 
 }
-
 // task during click event
-const vPoints = [];
-const fColors = [];
+function createClickHandler() {
+    const vPoints = [];
+    const fColors = [];
 
-function click(event, canvas, context, vLocation, fLocation) {
-    const clientX = event.clientX;
-    const clientY = event.clientY;
-    const rect = event.target.getBoundingClientRect(); // event.target or canvas
+    return function (event, canvas, context, vLocation, fLocation) {
+        const clientX = event.clientX;
+        const clientY = event.clientY;
+        const rect = event.target.getBoundingClientRect(); // event.target or canvas
 
-    const maxX = canvas.width / 2;
-    const maxY = canvas.height / 2;
+        const maxX = canvas.width / 2;
+        const maxY = canvas.height / 2;
 
-    // webgl canvas normalized coordinates
-    const x = ((clientX - rect.left) - maxX) / maxX;
-    const y = (maxY - (clientY - rect.top)) / maxY;
+        // webgl canvas normalized coordinates
+        const x = ((clientX - rect.left) - maxX) / maxX;
+        const y = (maxY - (clientY - rect.top)) / maxY;
 
-    // store data points
-    vPoints.push([x, y]);
-    if (x >= 0.0 && y >= 0.0) {
-        fColors.push([1.0, 0.0, 0.0, 1.0]);
-    } else if (x < 0.0 && y < 0.0) {
-        fColors.push([0.0, 0.0, 1.0, 1.0]);
-    } else {
-        fColors.push([1.0, 1.0, 1.0, 1.0]);
-    }
+        // store data points
+        vPoints.push([x, y]);
+        if (x >= 0.0 && y >= 0.0) {
+            fColors.push([0.98, 0.64, 0.54, 1.0]);
+        } else if (x < 0.0 && y < 0.0) {
+            fColors.push([0.91, 0.33, 0.25, 1.0]);
+        } else {
+            fColors.push([1.0, 0.5, 0.31, 1.0]);
+        }
 
-    // clear canvas and draw
-    clearCanvas(context, [1.0, 0.7, 0.7, 1.0]);
+        // clear canvas and draw
+        clearCanvas(context, [1.0, 0.92, 0.63, 1.0]);
 
-    for (let i = 0; i < vPoints.length; i++) {
-        context.vertexAttrib2fv(vLocation, [vPoints[i][0], vPoints[i][1]]);
-        context.uniform4f(fLocation, fColors[i][0], fColors[i][1], fColors[i][2], fColors[i][3]);
-        context.drawArrays(context.POINTS, 0, 1);
+        for (let i = 0; i < vPoints.length; i++) {
+            context.vertexAttrib2fv(vLocation, [vPoints[i][0], vPoints[i][1]]);
+            context.uniform4f(fLocation, fColors[i][0], fColors[i][1], fColors[i][2], fColors[i][3]);
+            context.drawArrays(context.POINTS, 0, 1);
+        }
     }
 }
+
