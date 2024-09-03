@@ -21,9 +21,10 @@ function clearCanvas(context, color) {
 /** handles buffer initialization and enables vertex buffer
  *  @param {Float32Array} data
  *  @param {number} nComponents - number of components per vertex
+ *  @param {GLSL Built-in Variable} vAttributeName - vertex attribute name
  */
 
-function initVertexBuffer(context, data, nComponents) {
+function initVertexBuffer(context, data, nComponents, vAttributeName='vPosition') {
     const buffer = context.createBuffer();
 
     if (!buffer) {
@@ -34,7 +35,7 @@ function initVertexBuffer(context, data, nComponents) {
     context.bindBuffer(context.ARRAY_BUFFER, buffer);
     context.bufferData(context.ARRAY_BUFFER, data, context.STATIC_DRAW);
 
-    const location = context.getAttribLocation(context.shaderProgram, 'vPosition');
+    const location = context.getAttribLocation(context.shaderProgram, vAttributeName);
     context.vertexAttribPointer(location, nComponents, context.FLOAT, false, 0, 0);
     context.enableVertexAttribArray(location);
 
