@@ -32,8 +32,6 @@ function main() {
     const clickHandler = createClickHandler();
 
     canvas.addEventListener('click', function (event) { clickHandler(event, canvas, context, vLocation, fLocation); });
-
-
 }
 // task during click event
 function createClickHandler() {
@@ -63,7 +61,7 @@ function createClickHandler() {
         }
 
         // clear canvas and draw
-        clearCanvas(context, [1.0, 0.92, 0.63, 1.0]);
+        clearCanvas(context, [0.862, 0.862, 0.862]);
 
         for (let i = 0; i < vPoints.length; i++) {
             context.vertexAttrib2fv(vLocation, [vPoints[i][0], vPoints[i][1]]);

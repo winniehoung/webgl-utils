@@ -13,7 +13,7 @@ function main() {
     // shader programs
     const vShaderSrc = 'attribute vec4 vPosition; void main(void){gl_Position=vPosition; gl_PointSize=10.0;}';
 
-    const fShaderSrc = 'precision mediump float; uniform vec4 fColor; void main(void){gl_FragColor=fColor;}';
+    const fShaderSrc = 'precision mediump float; uniform vec4 fColor; void main(void){gl_FragColor=vec4(0.98,0.64,0.54,1.0);}';
 
     // initialize shaders
     if (!initShaderProgram(context, vShaderSrc, fShaderSrc)) {
@@ -21,55 +21,22 @@ function main() {
         return;
     }
 
-    // prepare shader variables, grab memory location 
-    const vLocation = context.getAttribLocation(context.shaderProgram, 'vPosition');
-    const fLocation = context.getUniformLocation(context.shaderProgram, 'fColor');
+    // prepare shader variable
+    const fLocation=context.getUniformLocation(context.shaderProgram, )
 
-    // clear canvas
-    clearCanvas(context, [0.8, 0.8, 0.8, 1.0]);
-
-    // handle click event on DOM element
-    const clickHandler = createClickHandler();
-
-    canvas.addEventListener('click', function (event) { clickHandler(event, canvas, context, vLocation, fLocation); });
-
-
+    render(context);
 }
-// task during click event
-function createClickHandler() {
-    const vPoints = [];
-    const fColors = [];
+function render(context) {
+    const data = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
+    const nComponents = 2;
 
-    return function (event, canvas, context, vLocation, fLocation) {
-        const clientX = event.clientX;
-        const clientY = event.clientY;
-        const rect = event.target.getBoundingClientRect(); // event.target or canvas
-
-        const maxX = canvas.width / 2;
-        const maxY = canvas.height / 2;
-
-        // webgl canvas normalized coordinates
-        const x = ((clientX - rect.left) - maxX) / maxX;
-        const y = (maxY - (clientY - rect.top)) / maxY;
-
-        // store data points
-        vPoints.push([x, y]);
-        if (x <= 0.0 && y >= 0.0) {
-            fColors.push([1.0, 0.71, 0.75, 1.0]);
-        } else if (x > 0.0 && y < 0.0) {
-            fColors.push([1.0, 0.078, 0.057, 1.0]);
-        } else {
-            fColors.push([1.0, 0.412, 0.706, 1.0]);
-        }
-
-        // clear canvas and draw
-        clearCanvas(context, [1.0, 0.92, 0.63, 1.0]);
-
-        for (let i = 0; i < vPoints.length; i++) {
-            context.vertexAttrib2fv(vLocation, [vPoints[i][0], vPoints[i][1]]);
-            context.uniform4f(fLocation, fColors[i][0], fColors[i][1], fColors[i][2], fColors[i][3]);
-            context.drawArrays(context.POINTS, 0, 1);
-        }
+    if (!initBuffer(context, data, nComponents)) {
+        console.error('Could not render vertices.');
+        return false;
     }
+
+    clearCanvas(context, [0.799,0.799,0.799, 1.0]);
+    console.log(data.length);
+    context.drawArrays(context.POINTS, 0, data.length / nComponents);
 }
 

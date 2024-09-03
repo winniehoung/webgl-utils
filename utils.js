@@ -1,10 +1,7 @@
 /** for JSDoc, created by winniehoung
  * @param {HTMLCanvasElement} canvas - <canvas> element
+ * @param {WebGLRenderingContext} context
  * @param {number} color - color of element
- * @param {number} x - x coord in canvas
- * @param {number} y - y coord in canvas
- * @param {number} width - width of element
- * @param {number} height - height of element
  */
 
 function getContext(canvas) {
@@ -18,15 +15,33 @@ function getContext(canvas) {
 }
 
 function clearCanvas(context, color) {
-    // context.fillStyle=color; used with context '2d'
-    // context.fillRect(x, y, width, height);
-
     context.clearColor(color[0], color[1], color[2], color[3]);
     context.clear(context.COLOR_BUFFER_BIT);
 }
+/** handles buffer initialization
+ *  @param {Float32Array} data
+ *  @param {number} nComponents - number of components per vertex
+ */
 
-/** handle shaders initialization
- * @param {WebGLRenderingContext} context
+function initBuffer(context, data, nComponents) {
+    const buffer = context.createBuffer();
+
+    if (!buffer) {
+        console.error('Could not create buffer.');
+        return false;
+    }
+
+    context.bindBuffer(context.ARRAY_BUFFER, buffer);
+    context.bufferData(context.ARRAY_BUFFER, data, context.STATIC_DRAW);
+
+    const location = context.getAttribLocation(context.shaderProgram, 'vPosition');
+    context.vertexAttribPointer(location, nComponents, context.FLOAT, false, 0, 0);
+    context.enableVertexAttribArray(location);
+
+    return true;
+}
+
+/** handles shaders initialization
  * @param {vshader} vShader - vertex shader
  * @param {fshader} fShader - fragment shader
  */
