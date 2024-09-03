@@ -18,12 +18,12 @@ function clearCanvas(context, color) {
     context.clearColor(color[0], color[1], color[2], color[3]);
     context.clear(context.COLOR_BUFFER_BIT);
 }
-/** handles buffer initialization
+/** handles buffer initialization and enables vertex buffer
  *  @param {Float32Array} data
  *  @param {number} nComponents - number of components per vertex
  */
 
-function initBuffer(context, data, nComponents) {
+function initVertexBuffer(context, data, nComponents) {
     const buffer = context.createBuffer();
 
     if (!buffer) {

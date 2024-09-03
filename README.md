@@ -1,3 +1,3 @@
 ### utils.js
 
-- contains boilerplate for shader initialization
+- boilerplate for shader and buffer initialization
