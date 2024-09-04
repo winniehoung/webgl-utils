@@ -1,4 +1,4 @@
-/** for JSDoc, created by winniehoung
+/** rendering_utils.js (c) winniehoung
  * @param {HTMLCanvasElement} canvas - <canvas> element
  * @param {WebGLRenderingContext} context
  * @param {number} color - color of element
