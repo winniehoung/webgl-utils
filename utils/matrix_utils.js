@@ -35,9 +35,12 @@ const Matrix = function (src) {
     if (src && typeof src == 'object' && src.hasOwnProperty('elements')) {
         // deep copy elements
         this.elements = new Float32Array(src.elements);
+        // boolean(1 byte) flag to avoid reinitialization of identity matrix when unnecessary
+        this.isIdentity=false;
     } else {
         // no src matrix, default to identity matrix
         this.elements = getIdentityMatrix();
+        this.isIdentity=true;
     }
 };
 
@@ -49,7 +52,9 @@ const Matrix = function (src) {
  * @param {number} angle - rotation angle
  */
 Matrix.prototype.setTranslationMatrix = function (Tx, Ty, Tz) {
-    this.elements = getIdentityMatrix();
+    if(!this.isIdentity){
+        this.elements = getIdentityMatrix();
+    }
     this.elements[12] = Tx;
     this.elements[13] = Ty;
     this.elements[14] = Tz;
@@ -57,7 +62,9 @@ Matrix.prototype.setTranslationMatrix = function (Tx, Ty, Tz) {
 }
 
 Matrix.prototype.setScaleMatrix = function (Sx, Sy, Sz) {
-    this.elements = getZeroMatrix();
+    if(!this.isIdentity){
+        this.elements = getIdentityMatrix();
+    }
     this.elements[0] = Sx;
     this.elements[5] = Sy;
     this.elements[10] = Sz;
@@ -66,13 +73,16 @@ Matrix.prototype.setScaleMatrix = function (Sx, Sy, Sz) {
 }
 
 Matrix.prototype.setRotationMatrix = function (angle) {
+    if(!this.isIdentity){
+        this.elements = getIdentityMatrix();
+    }
     const radians = Math.PI * angle / 180;
     const cosB = Math.cos(radians);
     const sinB = Math.sin(radians);
 
-    this.elements = getIdentityMatrix();
     this.elements[0] = cosB;
     this.elements[1] = sinB;
     this.elements[4] = -sinB;
     this.elements[5] = cosB;
+    return this;
 }
