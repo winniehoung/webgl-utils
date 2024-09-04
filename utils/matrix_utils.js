@@ -23,36 +23,27 @@ Matrix.prototype.mMultiply = function (transformMatrix) {
     // transformMatrix(rows) x thisMatrix(columns): (A[0-3] x B[0-3])
     const A = transformMatrix.mElements;
     const B = this.mElements;
-
-    // transformMatrix rows
-    const A0 = new Vector([A[0], A[4], A[8], A[12]]);
-    const A1 = new Vector([A[1], A[5], A[9], A[13]]);
-    const A2 = new Vector([A[2], A[6], A[10], A[14]]);
-    const A3 = new Vector([A[3], A[7], A[11], A[15]]);
-
-    // thisMatrix columns
-    const BColumns = [];
-    BColumns[0] = new Vector(B[0], B[1], B[2], B[3]);
-    BColumns[1] = new Vector(B[4], B[5], B[6], B[7]);
-    BColumns[2] = new Vector(B[8], B[9], B[10], B[11]);
-    BColumns[3] = new Vector(B[12], B[13], B[14], B[15]);
+    const modelMatrix = new Float32Array(16);
 
     // populate model matrix
-    this.mElements[0] = A0.vDotProduct(BColumns[0]);
-
-    for (let i = 1; i < 4; i++) {
-        this.mElements[i] = A0.vDotProduct(BColumns[i]);
+    for (let i = 0; i < 4; i++) {
+        modelMatrix[i] = (A[0] * B[4 * i]) + (A[4] * B[4 * i + 1]) +
+            (A[8] * B[4 * i + 2]) + (A[12] * B[4 * i + 3]);
     }
-    for (let i = 4; i < 8; i++) {
-        this.mElements[i] = A1.vDotProduct(BColumns[i - 4]);
+    for (let i = 0; i < 4; i++) {
+        modelMatrix[i + 4] = (A[1] * B[4 * i]) + (A[5] * B[4 * i + 1]) +
+            (A[9] * B[4 * i + 2]) + (A[13] * B[4 * i + 3]);
     }
-    for (let i = 8; i < 11; i++) {
-        this.mElements[i] = A2.vDotProduct(BColumns[i - 8]);
+    for (let i = 0; i < 4; i++) {
+        modelMatrix[i + 8] = (A[2] * B[4 * i]) + (A[6] * B[4 * i + 1]) +
+            (A[10] * B[4 * i + 2]) + (A[14] * B[4 * i + 3]);
     }
-    for (let i = 12; i < 15; i++) {
-        this.mElements[i] = A3.vDotProduct(BColumns[i - 12]);
+    for (let i = 0; i < 4; i++) {
+        modelMatrix[i + 12] = (A[3] * B[4 * i]) + (A[7] * B[4 * i + 1]) +
+            (A[11] * B[4 * i + 2]) + (A[15] * B[4 * i + 3]);
     }
-
+    // in-place update
+    this.mElements.set(modelMatrix);
 }
 
 /**
@@ -123,78 +114,3 @@ Matrix.prototype.setRotationMatrix = function (angle) { //currently about z-axis
     return this;
 }
 
-/**
- * vector representation for convenience of matrix multiplication, by default 4x1 representation, elements represented as [xyzw]{1};
- * 
- * @param {Float32Array} src - source vector;
- * @param {Float32Array} operandVector - vector to dot product with;
- * this section is vector function constructor, vector scalar multiply function and performance optimization utilities;
- * 
- * design considerations: 
- * are zero vectors common enough in transformations for isZero property overhead;
- * zero source vectors conveniently handled by getBasisIndex
- * handles common basis vectors separately to optimize performance;
- */
-
-const Vector = function (src) {
-    // only vectors of 4 elements will be created
-    if (src && typeof src === 'object' && src.hasOwnProperty('vElements') && src.vElements.length === 4) {
-        // deep copy vElements
-        this.vElements = new Float32Array(src.vElements);
-        this.isZero = false;
-
-        // basis vectors common in transformation, handle separately
-        this.basisIndex = this.getBasisIndex;
-    } else {
-        // default to zero vector
-        this.vElements = new Float32Array([0, 0, 0, 0]);
-        this.isZero = true;
-        this.basisIndex = -1;
-    }
-}
-
-Vector.prototype.vDotProduct = function (operandVector) {
-    // if there is atleast one basis vector and the two vectors contain an equal nonzero index, returns single product, otherwise returns 0
-    if (this.basisIndex !== -1 || operandVector.basisIndex !== -1) {
-        // case of 2 basis vectors with equal index :
-        return (this.basisIndex === operandVector.basisIndex) ? (this.vElements[this.basisIndex] * operandVector.vElements[this.basisIndex]) :
-        // instance is the single basis vector, vectors have similar nonzero index :
-        (this.basisIndex !== -1 && operandVector.vElements[this.basisIndex] !== 0) ? (this.vElements[this.basisIndex] * operandVector.vElements[this.basisIndex]) :
-        // operandVector is the single basis vector, vectors have similar nonzero index :
-        (operandVector.basisIndex !== -1 && this.vElements[operandVector.basisIndex] != 0) ? (this.vElements[operandVector.basisIndex] * operandVector.vElements[operandVector.basisIndex]) :
-        // vectors don't have similar nonzero index
-        0;
-    }
-
-    // if zero vector, dot product is zero
-    if (this.vElements.isZero || operandVector.vElements.isZero) {
-        return 0;
-    }
-
-    // dot product of two nonzero, nonbasis vectors
-    return this.vElements[0] * operandVector[0] +
-           this.vElements[1] * operandVector[1] +
-           this.vElements[2] * operandVector[2] +
-           this.vElements[3] * operandVector[3];
-}
-
-// if basis vector, returns index of single nonzero element, else returns -1
-Vector.prototype.getBasisIndex = function () {
-    // number of zeros and nonzeros
-    let nZero = nNonZero = 0;
-    // store nonzero index of basis vectors
-    let nonZeroIndex = -1;
-
-    // shorcircuit the common zero case, 
-    for (let i = 0; i < 4; i++) {
-      !this.vElements[i] ? nZero++ : (nNonZero++, (nonZeroIndex = i));
-    }
-
-    // return index if basis, otherwise return -1
-    return (nNonZero === 1) ? nonZeroIndex :
-           (nNonZero === 0) ? (this.isZero = true, -1) : -1;
-}
-
-Vector.prototype.isZeroVector = function () {
-    return this.vElements.every(x => x === 0);
-}
