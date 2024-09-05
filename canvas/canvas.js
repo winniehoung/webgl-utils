@@ -26,7 +26,7 @@ function main() {
     const fLocation = context.getUniformLocation(context.shaderProgram, 'fColor');
 
     // clear canvas
-    clearCanvas(context, [.73, .64, .78, 1.0]);
+    clearCanvas(context, [.97, .75, .27, 1]);
 
     // handle click event on DOM element
     const clickHandler = createClickHandler();
@@ -61,7 +61,7 @@ function createClickHandler() {
         }
 
         // clear canvas and draw
-        clearCanvas(context, [.97, .75, .27, 1]);
+        clearCanvas(context, [.73, .64, .78, 1.0]);
 
         for (let i = 0; i < vPoints.length; i++) {
             context.vertexAttrib2fv(vLocation, [vPoints[i][0], vPoints[i][1]]);

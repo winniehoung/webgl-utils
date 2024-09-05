@@ -3,7 +3,8 @@
  * 'f' prefix for fragment
  */
 
-let timestamp = Date.now();
+let ROTATIONSPEED = 50;
+let TIMESTAMP = Date.now();
 main2();
 
 function main2() {
@@ -62,6 +63,9 @@ function main2() {
     let angle = 0;
     let scale = 0;
 
+    // initialize slider event listener
+    initSlider();
+
     const animate = function () {
         // update transformation constants and render vertices
         [angle, scale] = updateTransformation(angle, scale);
@@ -101,17 +105,26 @@ function render(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation
 }
 
 // where transformations should be at currently, accounting for changing browser load
-function updateTransformation(angle, scale, scalingUp) {
+function updateTransformation(angle, scale) {
     const now = Date.now()
-    const timeElapsed = now - timestamp;
-    timestamp = now;
+    const timeElapsed = now - TIMESTAMP;
+    TIMESTAMP = now;
 
     // rotate at x degrees per second`
-    const rotationSpeed = 55;
-    angle = (angle + rotationSpeed * timeElapsed / 1000) % 360;
+    angle = (angle + ROTATIONSPEED * timeElapsed / 1000) % 360;
 
     // map angle value to scale for convenience
     scale = angle * 2 / 365;
 
     return [angle, scale];
+}
+
+function initSlider(){
+    const slider=document.getElementById('slider');
+    const speed=document.getElementById('speed');
+
+    slider.addEventListener('input',function(){
+        ROTATIONSPEED=parseFloat(slider.value);
+        speed.textContent=ROTATIONSPEED;
+    })
 }
