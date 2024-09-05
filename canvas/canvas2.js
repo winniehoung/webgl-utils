@@ -48,7 +48,9 @@ function main2() {
 
     const animate = function () {
         // update transformation constants and render vertices
-        const { newAngle, newScale } = updateTransformation(angle, scale);
+        let { newAngle, newScale } = updateTransformation(angle, scale);
+        scale = newScale;
+        angle = newAngle;
 
         // render graphics
         render(context, nPoints, newAngle, newScale, modelMatrix, modelMatrixLocation);
@@ -61,10 +63,8 @@ function main2() {
 }
 
 function render(context, nPoints, newAngle, newScale, modelMatrix, modelMatrixLocation) {
-    // console.log('new scale: ' + newScale);
-    // set transformation matrix
-    modelMatrix.rotateMatrix(newAngle).scaleMatrix(newScale, newScale, 0);
-
+    // reset transformation matrix
+    modelMatrix.setRotationMatrix(newAngle).scaleMatrix(newScale, newScale, 0);
     // assign per frame rotation matrix data
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
 
@@ -75,20 +75,21 @@ function render(context, nPoints, newAngle, newScale, modelMatrix, modelMatrixLo
 
 // where transformations should be at currently, accounting for changing browser load
 function updateTransformation(angle, scale) {
+    console.log('scale ' + scale + ' angle ' + angle);
     const now = Date.now()
     const timeElapsed = now - timestamp;
     timestamp = now;
 
-    // rotate at x degrees per ms
+    // rotate at x degrees per second`
     const rotationSpeed = 55;
-    const newAngle = (angle + rotationSpeed * timeElapsed/1000) % 360;
+    const newAngle = (angle + rotationSpeed * timeElapsed / 1000) % 360;
 
     // sine function constants
     const scalingAmplitude = 1;
-    const scalingPeriod = 10000;
-    // in radians per ms
-    const scalingFrequency = Math.PI * 2 / scalingPeriod;
-    const newScale = scalingAmplitude * Math.sin(scalingFrequency * timeElapsed);
+    // frequency in radians per second
+    const scalingFrequency = 10 * Math.PI / 180;
+    const deltaX = scale + scalingFrequency * timeElapsed / 1000;
+    const newScale = 1 + scalingAmplitude * Math.sin(deltaX);
 
     return { newAngle, newScale };
 }
