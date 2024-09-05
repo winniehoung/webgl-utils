@@ -17,7 +17,7 @@ function main() {
 
     // initialize shaders
     if (!initShaderProgram(context, vShaderSrc, fShaderSrc)) {
-        console.error('Failed to initialize shaders.');
+        console.error('failed to initialize shaders');
         return;
     }
 

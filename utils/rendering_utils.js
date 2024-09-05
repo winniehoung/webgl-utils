@@ -6,7 +6,7 @@
 
 function getContext(canvas) {
     if (!canvas) {
-        console.error('Browser can not retrieve canvas');
+        console.error('browser can not retrieve canvas');
         return;
     }
 
@@ -28,7 +28,7 @@ function initVertexBuffer(context, data, nComponents, vAttributeName='vPosition'
     const buffer = context.createBuffer();
 
     if (!buffer) {
-        console.error('Could not create buffer.');
+        console.error('could not create buffer');
         return false;
     }
 
@@ -38,7 +38,7 @@ function initVertexBuffer(context, data, nComponents, vAttributeName='vPosition'
     const location = context.getAttribLocation(context.shaderProgram, vAttributeName);
     context.vertexAttribPointer(location, nComponents, context.FLOAT, false, 0, 0);
     context.enableVertexAttribArray(location);
-
+    
     return true;
 }
 
@@ -51,7 +51,7 @@ function initShaderProgram(context, vShaderSrc, fShaderSrc) {
 
     const shaderProgram = createShaderProgram(context, vShaderSrc, fShaderSrc);
     if (!shaderProgram) {
-        console.error('Failed to create program');
+        console.error('failed to create program');
         return false;
     }
     context.useProgram(shaderProgram);
@@ -65,7 +65,7 @@ function createShaderProgram(context, vShaderSrc, fShaderSrc) {
     const fShader = compileShader(context, fShaderSrc, context.FRAGMENT_SHADER);
 
     if (!vShader || !fShader) {
-        console.error('Could not compile shaders.');
+        console.error('could not compile shaders');
         return null;
     }
 
@@ -75,7 +75,7 @@ function createShaderProgram(context, vShaderSrc, fShaderSrc) {
     context.linkProgram(shaderProgram);
 
     if (!context.getProgramParameter(shaderProgram, context.LINK_STATUS)) {
-        console.error('Can not initialize shader program: ' + context.getProgramInfoLog(shaderProgram));
+        console.error('can not initialize shader program: ' + context.getProgramInfoLog(shaderProgram));
 
         return null;
     }
@@ -88,7 +88,7 @@ function compileShader(context, shaderSrc, shaderType) {
     context.compileShader(shader);
 
     if (!context.getShaderParameter(shader, context.COMPILE_STATUS)) {
-        console.error('Error compiling shaders: ' + context.getShaderInfoLog(shader));
+        console.error('error compiling shaders: ' + context.getShaderInfoLog(shader));
 
         context.deleteShader(shader);
         return null;
