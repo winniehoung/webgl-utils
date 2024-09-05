@@ -20,16 +20,19 @@ function clearCanvas(context, color) {
 }
 /** handles buffer initialization and enables vertex buffer
  *  @param {Float32Array} data
- *  @param {number} nComponents - number of components per vertex
  *  @param {GLSL Built-in Variable} vPosition - vertex position attribute name
- * 
- * 
+ *  @param {number} nComponents - number of components per vertex
+ *  @param {number} stride - num bytes per vertex element in data
+ *  @param {number} offset - offset of vertex info in data
+ *  
  * context.bindBuffer(target, buffer) - target c.ARRAY_BUFFER, c.ELEMENT_ARRAY_BUFFER
  * context.bindBuffer(target, data, usage) - usage(hint) c.STATIC_DRAW, c.STREAM_DRAW, c.DYNAMIC_DRAW
  * context.vertexAttribPointer(location, ncomponents, datatype, normalize, stride, offset) - ncomponents [1234]{1}, datatype c.FLOAT, normalize true|false, stride num bytes between vertex data elements
  */
 
-function initVertexBuffer(context, data, [vPosition = 'vPosition', vColor = 'vColor'] = [], [nPositionComponents = 2, nColorComponents = 3] = [], [[positionStride = 0, positionOffset = 0], [colorStride = 0, colorOffset = 0] = []]) {
+// gl_Position required (vPosition)
+function initVertexBuffer(context, data, [vPosition = 'vPosition', vColor = ''] = [], [nPositionComponents = 2, nColorComponents = 3] = [], stride, [positionOffset = 0, colorOffset = 0] = []) {
+
     const buffer = context.createBuffer();
 
     if (!buffer) {
@@ -42,13 +45,17 @@ function initVertexBuffer(context, data, [vPosition = 'vPosition', vColor = 'vCo
 
     // get position location, assign and enable buffer
     const positionLocation = context.getAttribLocation(context.shaderProgram, vPosition);
-    context.vertexAttribPointer(positionLocation, nPositionComponents, context.FLOAT, false, positionStride, positionOffset);
+    positionLocation === -1 && console.error('could not get ${vPosition} position location');
+    context.vertexAttribPointer(positionLocation, nPositionComponents, context.FLOAT, false, stride, positionOffset);
     context.enableVertexAttribArray(location);
 
     // get color location, assign and enable buffer
-    const colorLocation = context.getAttribLocation(context.shaderProgram, vColor);
-    context.vertexAttribPointer(colorLocation, nColorComponents, context.FLOAT, false, colorStride, colorOffset);
-    context.enableVertexAttribArray(colorLocation);
+    if (vColor) {
+        const colorLocation = context.getAttribLocation(context.shaderProgram, vColor);
+        colorLocation === -1 && console.error('could not get ${vColor} color location');
+        context.vertexAttribPointer(colorLocation, nColorComponents, context.FLOAT, false, stride, colorOffset);
+        context.enableVertexAttribArray(colorLocation);
+    }
     return true;
 }
 

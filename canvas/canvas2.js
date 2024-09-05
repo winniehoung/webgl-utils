@@ -23,22 +23,20 @@ function main2() {
     }
     // vertex data and assign vertices
     const data = new Float32Array([
-         0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.92, 0.36, 0.47,
-         0.5, 0.0, 0.96, 0.51, 0.56
+        0.0, 0.5, 0.94, 0.27, 0.37,
+        -0.5, 0.0, 0.99, 0.96, 0.93,
+        0.5, 0.0, 0.96, 0.51, 0.56
     ]);
-    const nComponents = 2;
-    const nData = data.length;
+    const nPositionComponents = 2;
+    const nColorComponents = 3;
+    const nPoints = data.length / 5;
+    const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
-    if (!initVertexBuffer(context, data, nComponents)) {
+    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * 5, [0, nBytes * 2])) {
         console.error('could not assign vertices');
         return false;
     }
-
-    // assign fragment (color) data
-    const fLocation = context.getUniformLocation(context.shaderProgram, 'fColor');
-    context.uniform4f(fLocation, 0.85, 0.24, 0.31, 0.98);
 
     // model matrix and its location
     const modelMatrix = new Matrix();
@@ -46,15 +44,14 @@ function main2() {
 
     // transformation data, speed in degrees per second
     let angle = 0;
-    let frameCount = 0;
+    let scale = 0;
 
     const animate = function () {
         // update transformation constants and render vertices
-        let newAngle = updateAngle(angle);
-        frameCount++;
+        const { newAngle, newScale } = updateTransformation(angle, scale);
 
         // render graphics
-        render(context, nData, nComponents, newAngle, frameCount, modelMatrix, modelMatrixLocation);
+        render(context, nPoints, newAngle, newScale, modelMatrix, modelMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate);
@@ -63,26 +60,35 @@ function main2() {
     animate();
 }
 
-function render(context, nData, nComponents, newAngle, frameCount, modelMatrix, modelMatrixLocation) {
+function render(context, nPoints, newAngle, newScale, modelMatrix, modelMatrixLocation) {
+    // console.log('new scale: ' + newScale);
     // set transformation matrix
-    modelMatrix.rotateMatrix(newAngle);
-    (frameCount % 60 === 0) ? modelMatrix.translateMatrix(0.005, 0, 0) : modelMatrix.translateMatrix(-0.005, 0, 0);
+    modelMatrix.rotateMatrix(newAngle).scaleMatrix(newScale, newScale, 0);
 
     // assign per frame rotation matrix data
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
 
     // clear canvas and draw
     clearCanvas(context, [.2, 0.31, 0.36, 1.0]);
-    context.drawArrays(context.TRIANGLES, 0, nData / nComponents);
+    context.drawArrays(context.TRIANGLES, 0, nPoints);
 }
 
-function updateAngle(angle) {
-    // rotate at x degrees per second
-    const speed = 55;
-    let timeElapsed = Date.now() - timestamp;
-    timestamp = Date.now();
+// where transformations should be at currently, accounting for changing browser load
+function updateTransformation(angle, scale) {
+    const now = Date.now()
+    const timeElapsed = now - timestamp;
+    timestamp = now;
 
-    // where angle should be at currently, accounting for changing browser load
-    return (angle + speed * timeElapsed / 1000) % 360;
+    // rotate at x degrees per ms
+    const rotationSpeed = 55;
+    const newAngle = (angle + rotationSpeed * timeElapsed/1000) % 360;
 
+    // sine function constants
+    const scalingAmplitude = 1;
+    const scalingPeriod = 10000;
+    // in radians per ms
+    const scalingFrequency = Math.PI * 2 / scalingPeriod;
+    const newScale = scalingAmplitude * Math.sin(scalingFrequency * timeElapsed);
+
+    return { newAngle, newScale };
 }
