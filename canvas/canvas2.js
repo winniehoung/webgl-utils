@@ -23,9 +23,25 @@ function main2() {
     }
     // vertex data and assign vertices
     const data = new Float32Array([
-        0.0, 0.5, 0.94, 0.27, 0.37,
+        // triangle 1
+         0.0, 0.5, 0.94, 0.27, 0.37,
         -0.5, 0.0, 0.99, 0.96, 0.93,
-        0.5, 0.0, 0.96, 0.51, 0.56
+         0.5, 0.0, 0.96, 0.51, 0.56,
+
+        // triangle 2
+         0.0, 0.5, 0.94, 0.27, 0.37,
+        -0.5, 0.0, 0.99, 0.96, 0.93,
+         0.5, 0.0, 0.96, 0.51, 0.56,
+
+        // triangle 3
+         0.0, 0.5, 0.94, 0.27, 0.37,
+        -0.5, 0.0, 0.99, 0.96, 0.93,
+         0.5, 0.0, 0.96, 0.51, 0.56,
+
+        // triangle 4
+         0.0, 0.5, 0.94, 0.27, 0.37,
+        -0.5, 0.0, 0.99, 0.96, 0.93,
+         0.5, 0.0, 0.96, 0.51, 0.56
     ]);
     const nPositionComponents = 2;
     const nColorComponents = 3;
@@ -48,50 +64,54 @@ function main2() {
 
     const animate = function () {
         // update transformation constants and render vertices
-        let { newAngle, newScale } = updateTransformation(angle, scale);
-        scale = newScale;
-        angle = newAngle;
+        [angle, scale] = updateTransformation(angle, scale);
 
         // render graphics
-        render(context, nPoints, newAngle, newScale, modelMatrix, modelMatrixLocation);
+        render(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate);
     }
-
     animate();
 }
 
-function render(context, nPoints, newAngle, newScale, modelMatrix, modelMatrixLocation) {
-    // reset transformation matrix
-    modelMatrix.setRotationMatrix(newAngle).scaleMatrix(newScale, newScale, 0);
-    // assign per frame rotation matrix data
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-
-    // clear canvas and draw
+function render(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
+    // clear canvas
     clearCanvas(context, [.2, 0.31, 0.36, 1.0]);
-    context.drawArrays(context.TRIANGLES, 0, nPoints);
+
+    // draw triangle 1 - reset transformation matrix and assign per frame rotation matrix data
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale, scale, 0);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.TRIANGLES, 0, nPoints/2);
+
+    // draw triangle 2
+    modelMatrix.setRotationMatrix(angle/4).scaleMatrix(scale,scale,0);
+    context.uniformMatrix4fv(modelMatrixLocation,false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP,nPoints/2,nPoints/2);
+
+    // draw triangle 3
+    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale,scale,0);
+    context.uniformMatrix4fv(modelMatrixLocation,false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP,nPoints/2,nPoints/2);
+
+    // draw triangle 4
+    modelMatrix.setRotationMatrix(-angle/4).scaleMatrix(scale,scale,0);
+    context.uniformMatrix4fv(modelMatrixLocation,false, modelMatrix.elements);
+    context.drawArrays(context.TRIANGLES,nPoints/2,nPoints/2);
 }
 
 // where transformations should be at currently, accounting for changing browser load
-function updateTransformation(angle, scale) {
-    console.log('scale ' + scale + ' angle ' + angle);
+function updateTransformation(angle, scale, scalingUp) {
     const now = Date.now()
     const timeElapsed = now - timestamp;
     timestamp = now;
 
     // rotate at x degrees per second`
     const rotationSpeed = 55;
-    const newAngle = (angle + rotationSpeed * timeElapsed / 1000) % 360;
+    angle = (angle + rotationSpeed * timeElapsed / 1000) % 360;
 
     // map angle value to scale for convenience
-    const newScale=newAngle*2/365;
-    // sine function constants
-    // const scalingAmplitude = 1;
-    // // frequency in radians per second
-    // const scalingFrequency = 10 * Math.PI / 180;
-    // const deltaX = scale + scalingFrequency * timeElapsed / 1000;
-    // const newScale = 1 + scalingAmplitude * Math.sin(deltaX);
+    scale = angle * 2 / 365;
 
-    return { newAngle, newScale };
+    return [angle, scale];
 }
