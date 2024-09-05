@@ -84,12 +84,14 @@ function updateTransformation(angle, scale) {
     const rotationSpeed = 55;
     const newAngle = (angle + rotationSpeed * timeElapsed / 1000) % 360;
 
+    // map angle value to scale for convenience
+    const newScale=newAngle*2/365;
     // sine function constants
-    const scalingAmplitude = 1;
-    // frequency in radians per second
-    const scalingFrequency = 10 * Math.PI / 180;
-    const deltaX = scale + scalingFrequency * timeElapsed / 1000;
-    const newScale = 1 + scalingAmplitude * Math.sin(deltaX);
+    // const scalingAmplitude = 1;
+    // // frequency in radians per second
+    // const scalingFrequency = 10 * Math.PI / 180;
+    // const deltaX = scale + scalingFrequency * timeElapsed / 1000;
+    // const newScale = 1 + scalingAmplitude * Math.sin(deltaX);
 
     return { newAngle, newScale };
 }
