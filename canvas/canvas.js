@@ -17,7 +17,7 @@ function main() {
 
     // initialize shaders
     if (!initShaderProgram(context, vShaderSrc, fShaderSrc)) {
-        console.error('failed to initialize shaders');
+        console.error('failed to initialize shaders.');
         return;
     }
 
@@ -26,7 +26,7 @@ function main() {
     const fLocation = context.getUniformLocation(context.shaderProgram, 'fColor');
 
     // clear canvas
-    clearCanvas(context, [0.8, 0.8, 0.8, 1.0]);
+    clearCanvas(context, [.73, .64, .78, 1.0]);
 
     // handle click event on DOM element
     const clickHandler = createClickHandler();
@@ -53,15 +53,15 @@ function createClickHandler() {
         // store data points
         vPoints.push([x, y]);
         if (x >= 0.0 && y >= 0.0) {
-            fColors.push([0.98, 0.64, 0.54, 1.0]);
+            fColors.push([.87, .93, .95, 1.0]);
         } else if (x < 0.0 && y < 0.0) {
-            fColors.push([0.91, 0.33, 0.25, 1.0]);
+            fColors.push([.95, .34, .22, 0.8]);
         } else {
-            fColors.push([1.0, 0.5, 0.31, 1.0]);
+            fColors.push([.97, .88, .55, 1.0]);
         }
 
         // clear canvas and draw
-        clearCanvas(context, [0.862, 0.862, 0.862]);
+        clearCanvas(context, [.97, .75, .27, 1]);
 
         for (let i = 0; i < vPoints.length; i++) {
             context.vertexAttrib2fv(vLocation, [vPoints[i][0], vPoints[i][1]]);

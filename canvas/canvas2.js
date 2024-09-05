@@ -12,9 +12,9 @@ function main2() {
     const context = getContext(canvas);
 
     // shader programs
-    const vShaderSrc = 'attribute vec4 vPosition; uniform mat4 modelMatrix; void main(void){gl_Position=modelMatrix*vPosition; gl_PointSize=10.0;}';
+    const vShaderSrc = 'attribute vec4 vPosition; attribute vec4 vColor; varying vec4 fColor; uniform mat4 modelMatrix; void main(void){gl_Position=modelMatrix*vPosition; fColor=vColor;}';
 
-    const fShaderSrc = 'precision mediump float; uniform vec4 fColor; void main(void){gl_FragColor=fColor;}';
+    const fShaderSrc = 'precision mediump float; varying vec4 fColor; void main(void){gl_FragColor=fColor;}';
 
     // initialize shaders
     if (!initShaderProgram(context, vShaderSrc, fShaderSrc)) {
@@ -22,10 +22,15 @@ function main2() {
         return;
     }
     // vertex data and assign vertices
-    const data = new Float32Array([0.0, 0.5, -0.5, 0.0, 0.5, 0.0]);
+    const data = new Float32Array([
+         0.0, 0.5, 0.94, 0.27, 0.37,
+        -0.5, 0.0, 0.92, 0.36, 0.47,
+         0.5, 0.0, 0.96, 0.51, 0.56
+    ]);
     const nComponents = 2;
     const nData = data.length;
 
+    // buffer links to vertex shader
     if (!initVertexBuffer(context, data, nComponents)) {
         console.error('could not assign vertices');
         return false;
@@ -33,34 +38,41 @@ function main2() {
 
     // assign fragment (color) data
     const fLocation = context.getUniformLocation(context.shaderProgram, 'fColor');
-    context.uniform4f(fLocation, 1.0, 0.5, 0.31, 1.0);
+    context.uniform4f(fLocation, 0.85, 0.24, 0.31, 0.98);
 
     // model matrix and its location
     const modelMatrix = new Matrix();
     const modelMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelMatrix');
 
-    // rotation data, speed in degrees per second
+    // transformation data, speed in degrees per second
     let angle = 0;
+    let frameCount = 0;
 
     const animate = function () {
-        // update rotation angle and render vertices
+        // update transformation constants and render vertices
         let newAngle = updateAngle(angle);
+        frameCount++;
 
-        render(context, nData, nComponents, newAngle, modelMatrix, modelMatrixLocation);
+        // render graphics
+        render(context, nData, nComponents, newAngle, frameCount, modelMatrix, modelMatrixLocation);
+
+        // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate);
     }
 
     animate();
 }
 
-function render(context, nData, nComponents, newAngle, modelMatrix, modelMatrixLocation) {
+function render(context, nData, nComponents, newAngle, frameCount, modelMatrix, modelMatrixLocation) {
     // set transformation matrix
     modelMatrix.rotateMatrix(newAngle);
+    (frameCount % 60 === 0) ? modelMatrix.translateMatrix(0.005, 0, 0) : modelMatrix.translateMatrix(-0.005, 0, 0);
+
     // assign per frame rotation matrix data
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
 
     // clear canvas and draw
-    clearCanvas(context, [0.799, 0.799, 0.799, 1.0]);
+    clearCanvas(context, [.2, 0.31, 0.36, 1.0]);
     context.drawArrays(context.TRIANGLES, 0, nData / nComponents);
 }
 
