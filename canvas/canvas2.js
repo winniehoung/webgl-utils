@@ -20,49 +20,45 @@ function main2() {
         console.error('failed to initialize shaders');
         return;
     }
-
-    // render vertices
-    render(context);
-
-}
-function render(context) {
-
-    const data = new Float32Array([0.0, 0.5,-0.5,0.0,0.5,0.0]);
+    // vertex data and assign vertices
+    const data = new Float32Array([0.0, 0.5, -0.5, 0.0, 0.5, 0.0]);
     const nComponents = 2;
+    const nData = data.length;
 
-    // assign vertices
     if (!initVertexBuffer(context, data, nComponents)) {
-        console.error('could not render vertices');
+        console.error('could not assign vertices');
         return false;
     }
-    // get fragment location and assign data
+
+    // assign fragment (color) data
     const fLocation = context.getUniformLocation(context.shaderProgram, 'fColor');
     context.uniform4f(fLocation, 1.0, 0.5, 0.31, 1.0);
 
+    // model matrix and its location
+    const modelMatrix = new Matrix();
+    const modelMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelMatrix');
 
     // rotation data
-    const angleB = 180;
-    const radianB = Math.PI * angleB / 180.0;
-    const cosB = Math.cos(radianB);
-    const sinB = Math.sin(radianB);
+    let angle=0;
 
-    // scale data
-    const scale = 0.5;
+    const animate = function () {
+        // update rotation angle and render vertices
+        angle+=5;
+        render(context, nData, nComponents, angle,modelMatrix, modelMatrixLocation);
+        requestAnimationFrame(animate);
+    }
 
-    const modelMatrix = new Matrix();
-    console.log('model matrix elements: ' + modelMatrix.elements);
+    animate();
+}
 
-    modelMatrix.translateMatrix(0.4,0.5,0);
-    console.log('translated matrix elements: ' + modelMatrix.elements);
-
-    // assign rotation matrix data
-    const rotationMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelMatrix');
-    context.uniformMatrix4fv(rotationMatrixLocation, false, modelMatrix.elements);
+function render(context, nData, nComponents, angle,modelMatrix, modelMatrixLocation) {
+    // set transformation matrix
+    modelMatrix.rotateMatrix(angle);
+    // assign per frame rotation matrix data
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
 
     // clear canvas and draw
     clearCanvas(context, [0.799, 0.799, 0.799, 1.0]);
-    context.drawArrays(context.TRIANGLES, 0, data.length / nComponents);
-
-    return true;
+    context.drawArrays(context.TRIANGLES, 0, nData / nComponents);
 }
 

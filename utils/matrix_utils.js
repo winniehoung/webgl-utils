@@ -61,11 +61,22 @@ Matrix.prototype.mMultiply = function (transformMatrix) {
  * @param {number} T - transform units;
  * @param {number} S - scale factor;
  * @param {number} angle - rotation angle;
- * this section transforms the model matrix
+ * this section transforms the model matrix by matrix multiplication
  */
 
 Matrix.prototype.translateMatrix = function (Tx, Ty, Tz) {
-    return this.mMultiply(new Matrix().setTranslationMatrix(Tx, Ty, Tz));
+    this.mMultiply(new Matrix().setTranslationMatrix(Tx, Ty, Tz));
+    return this;
+}
+
+Matrix.prototype.scaleMatrix = function (Sx, Sy, Sz) {
+    this.mMultiply(new Matrix().setScaleMatrix(Sx, Sy, Sz));
+    return this;
+}
+
+Matrix.prototype.rotateMatrix = function (angle) {
+    this.mMultiply(new Matrix().setRotationMatrix(angle));
+    return this;
 }
 
 /**
