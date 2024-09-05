@@ -3,6 +3,7 @@
  * 'f' prefix for fragment
  */
 
+let timestamp = Date.now();
 main2();
 
 function main2() {
@@ -38,22 +39,23 @@ function main2() {
     const modelMatrix = new Matrix();
     const modelMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelMatrix');
 
-    // rotation data
-    let angle=0;
+    // rotation data, speed in degrees per second
+    let angle = 0;
 
     const animate = function () {
         // update rotation angle and render vertices
-        angle+=5;
-        render(context, nData, nComponents, angle,modelMatrix, modelMatrixLocation);
+        let newAngle = updateAngle(angle);
+
+        render(context, nData, nComponents, newAngle, modelMatrix, modelMatrixLocation);
         requestAnimationFrame(animate);
     }
 
     animate();
 }
 
-function render(context, nData, nComponents, angle,modelMatrix, modelMatrixLocation) {
+function render(context, nData, nComponents, newAngle, modelMatrix, modelMatrixLocation) {
     // set transformation matrix
-    modelMatrix.rotateMatrix(angle);
+    modelMatrix.rotateMatrix(newAngle);
     // assign per frame rotation matrix data
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
 
@@ -62,3 +64,13 @@ function render(context, nData, nComponents, angle,modelMatrix, modelMatrixLocat
     context.drawArrays(context.TRIANGLES, 0, nData / nComponents);
 }
 
+function updateAngle(angle) {
+    // rotate at x degrees per second
+    const speed = 55;
+    let timeElapsed = Date.now() - timestamp;
+    timestamp = Date.now();
+
+    // where angle should be at currently, accounting for changing browser load
+    return (angle + speed * timeElapsed / 1000) % 360;
+
+}
