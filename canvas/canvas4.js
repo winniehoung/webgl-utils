@@ -12,7 +12,9 @@ let ROTATIONSPEED4 = 55;
 let TIMESTAMP4 = Date.now();
 
 // view matrix constants
-let CAMERAX = CAMERAY = CAMERAZ = 0.25;
+let CAMERAX=0.25;
+let CAMERAY=0.25;
+let CAMERAZ=0.25;
 
 main4();
 
@@ -57,6 +59,30 @@ function main4() {
          0.0, 0.5,  0.8, 0.87, 0.93, 0.95,
         -0.5, 0.9,  0.3, 0.87, 0.93, 0.95,
          0.5, 0.9,  0.3, 0.87, 0.93, 0.95,
+
+         0.5, 0.5,  0.8, 0.87, 0.93, 0.95,
+         1.0, 0.0,  0.3, 0.87, 0.93, 0.95,
+         1.0, 0.0,  1.0, 0.87, 0.93, 0.95,
+         0.5, 0.5,  0.8, 0.87, 0.93, 0.95,
+         0.0, 0.0,  1.0, 0.87, 0.93, 0.95,
+         1.0, 0.0,  1.0, 0.87, 0.93, 0.95,
+         0.0, 0.0,  1.0, 0.87, 0.93, 0.95,
+         0.0, 0.0,  0.3, 0.87, 0.93, 0.95,
+         0.5, 0.5,  0.8, 0.87, 0.93, 0.95,
+         0.0, 0.0,  0.3, 0.87, 0.93, 0.95,
+         1.0, 0.0,  0.3, 0.87, 0.93, 0.95,
+
+         0.5, 0.5,  0.8, 0.87, 0.93, 0.95,
+         1.0, 0.9,  0.3, 0.87, 0.93, 0.95,
+         1.0, 0.9,  1.0, 0.87, 0.93, 0.95,
+         0.5, 0.5,  0.8, 0.87, 0.93, 0.95,
+         0.0, 0.9,  1.0, 0.87, 0.93, 0.95,
+         1.0, 0.9,  1.0, 0.87, 0.93, 0.95,
+         0.0, 0.9,  1.0, 0.87, 0.93, 0.95,
+         0.0, 0.9,  0.3, 0.87, 0.93, 0.95,
+         0.5, 0.5,  0.8, 0.87, 0.93, 0.95,
+         0.0, 0.9,  0.3, 0.87, 0.93, 0.95,
+         1.0, 0.9,  0.3, 0.87, 0.93, 0.95,
     ]);
 
     // data info
@@ -118,6 +144,14 @@ function render4(context, nVertices, nObjects, angle, scale, modelMatrix, viewMa
     modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nVertices * 1 / nObjects, nVertices / nObjects);
+
+    modelMatrix.setRotationMatrix(angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
+    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nVertices * 2 / nObjects, nVertices / nObjects);
+
+    modelMatrix.setRotationMatrix(angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
+    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nVertices * 3 / nObjects, nVertices / nObjects);
 
 }
 
