@@ -1,15 +1,15 @@
 ### canvas.html
-- example project utilizing rendering and matrix utils
+- Example project utilizing rendering and matrix utils
 
-### instructions
-- save repository to file system, then open `canvas.html` in browser
+### Instructions
+- Save repository to file system, then open `canvas.html` in browser
 
 ### rendering_utils.js
 
-- boilerplate for shader and buffer initialization
-- in buffer initialization, GLSL variable `gl_Position` defaults to `'vPosition'` when parameter is not provided
+- Boilerplate for shader and buffer initialization
+- In buffer initialization, when parameter is not provided, GLSL attribute variable `gl_Position`defaults to `'vPosition`. Attribute variable name for varying variable `fColor`(vertex colors) defaults to `vColor`. 
 
 ### matrix_utils.js
-- matrix prototype and transformations
+- Matrix prototype and transformations
 - `setViewMatrix` aligns world coordinates to camera coordinates
-- if you want to set camera view that is not at the default origin, call `setViewMatrix`before transforming with `translateMatrix`, `scaleMatrix`, `rotateMatrix`
+- If you want to set camera view that is not at the default origin, call `setViewMatrix`before transforming with `translateMatrix`, `scaleMatrix`, `rotateMatrix`
