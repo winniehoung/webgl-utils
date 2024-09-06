@@ -3,6 +3,8 @@
  * 'f' prefix for fragment
  */
 
+let ROTATIONSPEED3 = 55;
+let TIMESTAMP3 = Date.now();
 
 main3();
 
@@ -11,7 +13,6 @@ function main3() {
     const canvas = document.getElementById('canvasid3');
     const context = getContext(canvas);
 
-    console.log('in main3');
     // shader programs
     const vShaderSrc = 'attribute vec4 vPosition; attribute vec4 vColor; varying vec4 fColor; uniform mat4 modelMatrix; void main(void){gl_Position=modelMatrix*vPosition; fColor=vColor;}';
 
@@ -24,6 +25,18 @@ function main3() {
     }
     // vertex data and assign vertices
     const data = new Float32Array([
+         0.0, 0.5, 0.87, 0.93, 0.95,
+        -0.5, 0.0, 0.90, 0.92, 0.93,
+         0.5, 0.0, 0.93, 0.88, 0.87,
+
+         0.0, 0.5, 0.87, 0.93, 0.95,
+        -0.5, 0.0, 0.90, 0.92, 0.93,
+         0.5, 0.0, 0.93, 0.88, 0.87,
+
+         0.0, 0.5, 0.87, 0.93, 0.95,
+        -0.5, 0.0, 0.90, 0.92, 0.93,
+         0.5, 0.0, 0.93, 0.88, 0.87,
+
          0.0, 0.5, 0.87, 0.93, 0.95,
         -0.5, 0.0, 0.90, 0.92, 0.93,
          0.5, 0.0, 0.93, 0.88, 0.87,
@@ -41,13 +54,57 @@ function main3() {
         return false;
     }
 
-    // model matrix and transformation
-    let modelMatrix = new Matrix().setRotationMatrix(180);
+    // model matrix and location
+    let modelMatrix = new Matrix();
     const modelMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelMatrix');
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
 
+    // transformation data, speed in degrees per second
+    let angle = 0;
+    let scale = 0;
 
-    clearCanvas(context, [.85,.17,.27, 1.0]);
-    context.drawArrays(context.TRIANGLES, 0, nPoints);
+    const animate3 = function () {
+        // update transformation constants and render vertices
+        [angle, scale] = updateTransformation3(angle, scale);
+
+        // render graphics
+        render3(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation);
+
+        // on 60hz browser, called 60 times/second
+        requestAnimationFrame(animate3);
+    }
+    animate3();
 }
 
+function render3(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
+    clearCanvas(context, [.85, .17, .27, 1.0]);
+
+    modelMatrix.setRotationMatrix(angle);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, 0, nPoints/4);
+
+    modelMatrix.setRotationMatrix(-angle/4).scaleMatrix(scale,scale,0);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints/4, nPoints/4);
+
+    modelMatrix.setScaleMatrix(scale,scale,0);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints*2/4, nPoints/4);
+
+    modelMatrix.setRotationMatrix(-angle);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints*3/4, nPoints/4);
+}
+
+function updateTransformation3(angle, scale) {
+    const now = Date.now()
+    const timeElapsed = now - TIMESTAMP3;
+    TIMESTAMP3 = now;
+
+    // rotate at x degrees per second`
+    angle = (angle + ROTATIONSPEED3 * timeElapsed / 1000) % 360;
+
+    // map angle value to scale for convenience
+    scale = angle * 2 / 365;
+
+    return [angle, scale];
+}
