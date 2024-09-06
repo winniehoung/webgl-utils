@@ -1,7 +1,7 @@
 ### canvas.html
 - example project utilizing rendering and matrix utils
 
-#### instructions
+### instructions
 - save repository to file system, then open `canvas.html` in browser
 
 ### rendering_utils.js
