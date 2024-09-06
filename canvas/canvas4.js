@@ -45,6 +45,18 @@ function main4() {
          0.0, 0.5,  0.8, 0.87, 0.93, 0.95,
         -0.5, 0.0,  0.3, 0.87, 0.93, 0.95,
          0.5, 0.0,  0.3, 0.87, 0.93, 0.95,
+
+         0.0, 0.5,  0.8, 0.87, 0.93, 0.95,
+         0.5, 0.9,  0.3, 0.87, 0.93, 0.95,
+         0.5, 0.9,  1.0, 0.87, 0.93, 0.95,
+         0.0, 0.5,  0.8, 0.87, 0.93, 0.95,
+        -0.5, 0.9,  1.0, 0.87, 0.93, 0.95,
+         0.5, 0.9,  1.0, 0.87, 0.93, 0.95,
+        -0.5, 0.9,  1.0, 0.87, 0.93, 0.95,
+        -0.5, 0.9,  0.3, 0.87, 0.93, 0.95,
+         0.0, 0.5,  0.8, 0.87, 0.93, 0.95,
+        -0.5, 0.9,  0.3, 0.87, 0.93, 0.95,
+         0.5, 0.9,  0.3, 0.87, 0.93, 0.95,
     ]);
 
     // data info
@@ -99,21 +111,14 @@ function render4(context, nVertices, nObjects, angle, scale, modelMatrix, viewMa
     clearCanvas(context, [.25, .17, .34, 1.0]);
 
     // draw triangles
-    modelMatrix.setScaleMatrix(scale/2, scale/2, scale/2).rotateMatrix(angle).useViewMatrix(viewMatrix);
+    modelMatrix.setScaleMatrix(scale / 2, scale / 2, scale / 2).rotateMatrix(angle).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nVertices / nObjects);
 
-    // modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
-    // context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    // context.drawArrays(context.LINE_LOOP, nVertices * 1 / nObjects, nVertices / nObjects);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
+    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nVertices * 1 / nObjects, nVertices / nObjects);
 
-    // modelMatrix.setRotationMatrix(angle).useViewMatrix(viewMatrix);
-    // context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    // context.drawArrays(context.LINE_LOOP, nVertices * 2 / nObjects, nVertices / nObjects);
-
-    // modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale / 2, scale, scale / 2).useViewMatrix(viewMatrix);
-    // context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    // context.drawArrays(context.LINE_LOOP, nVertices * 3 / nObjects, nVertices / nObjects);
 }
 
 function updateTransformation4(angle, scale) {
