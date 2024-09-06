@@ -18,7 +18,7 @@
 
 ### General Processing Flow
 1. Get `html` canvas and `webgl` context
-2. Initialize vertex shader and fragment shader
-3. Create buffer, bind data, assign to attribute variable, then enable buffer
+2. Compile shader source and link to shader program, then assign shader program to `webgl` context
+3. Create buffer, bind buffer, write data, assign to attribute variable, then enable buffer assignment
 4. Clear canvas
 5. Render
