@@ -25,31 +25,32 @@ function main4() {
     }
     // vertex data and assign vertices
     const data = new Float32Array([
-         0.0, 0.5, 0.87, 0.93, 0.95,
-        -0.5, 0.0, 0.90, 0.92, 0.93,
-         0.5, 0.0, 0.93, 0.88, 0.87,
+         0.0, 0.5, -0.4, 0.87, 0.93, 0.95,
+        -0.5, 0.0, -0.4, 0.90, 0.92, 0.93,
+         0.5, 0.0, -0.4, 0.93, 0.88, 0.87,
 
-         0.0, 0.5, 0.87, 0.93, 0.95,
-        -0.5, 0.0, 0.90, 0.92, 0.93,
-         0.5, 0.0, 0.93, 0.88, 0.87,
+         0.0, 0.5, -0.2, 0.87, 0.93, 0.95,
+        -0.5, 0.0, -0.2, 0.90, 0.92, 0.93,
+         0.5, 0.0, -0.2, 0.93, 0.88, 0.87,
 
-         0.0, 0.5, 0.87, 0.93, 0.95,
-        -0.5, 0.0, 0.90, 0.92, 0.93,
-         0.5, 0.0, 0.93, 0.88, 0.87,
+         0.0, 0.5, -0.2, 0.87, 0.93, 0.95,
+        -0.5, 0.0, -0.2, 0.90, 0.92, 0.93,
+         0.5, 0.0, -0.2, 0.93, 0.88, 0.87,
 
-         0.0, 0.5, 0.87, 0.93, 0.95,
-        -0.5, 0.0, 0.90, 0.92, 0.93,
-         0.5, 0.0, 0.93, 0.88, 0.87,
+         0.0, 0.5,  0.0, 0.87, 0.93, 0.95,
+        -0.5, 0.0,  0.0, 0.90, 0.92, 0.93,
+         0.5, 0.0,  0.0, 0.93, 0.88, 0.87,
     ]);
 
     // data info
-    const nPositionComponents = 2;
+    const nPositionComponents = 3;
     const nColorComponents = 3;
     const nPoints = data.length / 5;
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
-    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * 5, [0, nBytes * 2])) {
+    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * 5, [0, nBytes * nPositionComponents])) {
+        
         console.error('could not assign vertices');
         return false;
     }
@@ -78,11 +79,11 @@ function main4() {
 }
 
 function render4(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
-    clearCanvas(context, [.25,.17,.34, 1.0]);
+    clearCanvas(context, [.25, .17, .34, 1.0]);
 
-    modelMatrix.setRotationMatrix(180).scaleMatrix(scale,scale,0);
+    modelMatrix.setRotationMatrix(180).scaleMatrix(scale, scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, 0, nPoints/4);
+    context.drawArrays(context.LINE_LOOP, 0, nPoints / 4);
 
     modelMatrix.setRotationMatrix(angle).scaleMatrix(scale,scale,0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
