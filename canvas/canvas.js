@@ -32,6 +32,10 @@ function main() {
     const clickHandler = createClickHandler();
 
     canvas.addEventListener('click', function (event) { clickHandler(event, canvas, context, vLocation, fLocation); });
+
+    canvas.addEventListener('mouseleave', function (event) {
+        clearCanvas(context, [.97, .75, .27, 1]);
+    })
 }
 // task during click event
 function createClickHandler() {
@@ -61,7 +65,7 @@ function createClickHandler() {
         }
 
         // clear canvas and draw
-        clearCanvas(context, [.73, .64, .78, 1.0]);
+        clearCanvas(context, [.95, .62, .1, 1.0]);
 
         for (let i = 0; i < vPoints.length; i++) {
             context.vertexAttrib2fv(vLocation, [vPoints[i][0], vPoints[i][1]]);

@@ -3,6 +3,9 @@
  * 
  * m prefix = matrix;
  * v prefix = vector;
+ * 
+ * design considerations: 
+ * some parameters grouped in arrays for readability and convenience in function calling, may remove arrays for efficiency
  */
 
 /**
@@ -52,9 +55,76 @@ Matrix.prototype.mMultiply = function (transformMatrix) {
                 A[row + 12] * B[4 * column + 3];
         }
     }
-
     // in-place update
     this.elements.set(modelMatrix);
+}
+
+/**
+ * @param {number} camera - starting point from which 3D space viewed
+ * @param {number} point - look-at point, together with camera determines direction of line of sight
+ * @param {number} up - up direction while viewing from camera to point
+ * this section constructs view matrix:
+ * 3x3 rotation component rotates world coordinates to align with camera coordinates
+ * 3x1 (row order) translation component moves world in opposite direction (of camera translation) so camera is positioned at the origin
+ * 
+ * 1. find Forward vector (forward) and normalize 
+ * 2. find Right vector (right) and normalize - F x U
+ * 3. Find accurate unit Up vector (trueU) - Rnorm x Fnorm, U is recalculated for numerical stability
+ * 4. populate view matrix with F, R, U and translation components - use original Up vector to ensure consistency with user input, also, translation components independent of rotation components
+ */
+
+Matrix.prototype.setViewMatrix = function ([cameraX = 0, cameraY = 0, cameraZ = 0] = [], [pointX = 0, pointY = 0, pointZ = -1] = [], [upX = 0, upY = 1, upZ = 0] = []) {
+
+    // forward vector and magnitude
+    let forwardX = pointX - cameraX;
+    let forwardY = pointY - cameraY;
+    let forwardZ = pointZ - cameraZ;
+    let forwardMagnitude = Math.sqrt(forwardX * forwardX + forwardY * forwardY + forwardZ * forwardZ);
+
+    // forward unit vector
+    forwardX /= forwardMagnitude;
+    forwardY /= forwardMagnitude;
+    forwardZ /= forwardMagnitude;
+
+    // right vector
+    let rightX = forwardY * upZ - forwardZ * upY;
+    let rightY = forwardX * upZ - forwardZ * upX;
+    let rightZ = forwardX * upY - forwardY * upX;
+    let rightMagnitude = Math.sqrt(rightX * rightX + rightY * rightY + rightZ * rightZ);
+
+    // right unit vector
+    rightX /= rightMagnitude;
+    rightY /= rightMagnitude;
+    rightZ /= rightMagnitude;
+
+    // true up unit vector
+    let trueUpX = rightY * forwardZ - rightZ * forwardY;
+    let trueUpY = rightX * forwardZ - rightZ * forwardX;
+    let trueUpZ = rightX * forwardY - rightY * forwardX;
+
+    // populate rotation part of view matrix
+    this.elements[0] = rightX;
+    this.elements[1] = trueUpX;
+    this.elements[2] = -forwardX;
+    this.elements[3] = 0;
+
+    this.elements[4] = rightY;
+    this.elements[5] = trueUpY;
+    this.elements[6] = -forwardY;
+    this.elements[7] = 0;
+
+    this.elements[8] = rightZ;
+    this.elements[9] = trueUpZ;
+    this.elements[10] = -forwardZ;
+    this.elements[11] = 0;
+
+    // translation part of view matrix
+    this.elements[12] = rightX * -cameraX + rightY * -cameraY + rightZ * -cameraZ;
+    this.elements[13] = upX * -cameraX + upY * -cameraY + upZ * -cameraZ;
+    this.elements[14] = forwardX * cameraX + forwardY * cameraY + forwardZ * cameraZ;
+    this.elements[15] = 1;
+
+    return this;
 }
 
 /**
