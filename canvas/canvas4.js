@@ -50,7 +50,7 @@ function main4() {
 
     // buffer links to vertex shader
     if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * 5, [0, nBytes * nPositionComponents])) {
-        
+
         console.error('could not assign vertices');
         return false;
     }
@@ -81,19 +81,19 @@ function main4() {
 function render4(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
     clearCanvas(context, [.25, .17, .34, 1.0]);
 
-    modelMatrix.setRotationMatrix(180).scaleMatrix(scale, scale, 0);
+    modelMatrix.setScaleMatrix(scale, scale, scale);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints / 4);
 
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale,scale,0);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale/2,scale/2,scale/2);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints/4, nPoints/4);
 
-    modelMatrix.setScaleMatrix(scale,scale,0);
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints*2/4, nPoints/4);
+    // modelMatrix.setRotationMatrix(angle);
+    // context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    // context.drawArrays(context.TRIANGLES, nPoints*2/4, nPoints/4);
 
-    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale,scale,0);
+    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale/2,scale,scale/2);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints*3/4, nPoints/4);
 }
