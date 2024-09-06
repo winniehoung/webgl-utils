@@ -49,7 +49,7 @@ function main3() {
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
-    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * 5, [0, nBytes * 2])) {
+    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * 2])) {
         console.error('could not assign vertices');
         return false;
     }
