@@ -4,7 +4,7 @@
 ### canvas.html
 - Example project utilizing rendering and matrix utils
 - Use speed slider to change animation speed
-- Click on first canvas & press on left | right arrow keys for a surprise
+- Press arrow keys for a surprise
 
 ### rendering_utils.js
 

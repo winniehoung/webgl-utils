@@ -12,7 +12,7 @@ let ROTATIONSPEED4 = 55;
 let TIMESTAMP4 = Date.now();
 
 // view matrix constants
-let CAMERAX = CAMERAY = CAMERAZ = 0;
+let CAMERAX = CAMERAY = CAMERAZ = 0.25;
 
 main4();
 
@@ -34,21 +34,17 @@ function main4() {
     // vertex data and assign vertices
     const data = new Float32Array([
 
-         0.0, 0.5, 0.4, 0.87, 0.93, 0.95,
-        -0.5, 0.0, 0.4, 0.90, 0.92, 0.93,
-         0.5, 0.0, 0.4, 0.93, 0.88, 0.87,
-
-         0.0, 0.5, 0.2, 0.87, 0.93, 0.95,
-        -0.5, 0.0, 0.2, 0.90, 0.92, 0.93,
-         0.5, 0.0, 0.2, 0.93, 0.88, 0.87,
-
-         0.0, 0.5, 0.2, 0.87, 0.93, 0.95,
-        -0.5, 0.0, 0.2, 0.90, 0.92, 0.93,
-         0.5, 0.0, 0.2, 0.93, 0.88, 0.87,
-
-         0.0, 0.5,  0.0, 0.87, 0.93, 0.95,
-        -0.5, 0.0,  0.0, 0.90, 0.92, 0.93,
-         0.5, 0.0,  0.0, 0.93, 0.88, 0.87,
+         0.0, 0.5,  0.8, 0.87, 0.93, 0.95,
+         0.5, 0.0,  0.3, 0.87, 0.93, 0.95,
+         0.5, 0.0,  1.0, 0.87, 0.93, 0.95,
+         0.0, 0.5,  0.8, 0.87, 0.93, 0.95,
+        -0.5, 0.0,  1.0, 0.87, 0.93, 0.95,
+         0.5, 0.0,  1.0, 0.87, 0.93, 0.95,
+        -0.5, 0.0,  1.0, 0.87, 0.93, 0.95,
+        -0.5, 0.0,  0.3, 0.87, 0.93, 0.95,
+         0.0, 0.5,  0.8, 0.87, 0.93, 0.95,
+        -0.5, 0.0,  0.3, 0.87, 0.93, 0.95,
+         0.5, 0.0,  0.3, 0.87, 0.93, 0.95,
     ]);
 
     // data info
@@ -56,7 +52,7 @@ function main4() {
     const nColorComponents = 3;
     const nVertices = data.length / (nPositionComponents+nColorComponents);
     // divide by number of vertices in an object
-    const nObjects = nVertices / 3;
+    const nObjects = nVertices / 11;
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
@@ -81,6 +77,8 @@ function main4() {
     document.addEventListener('keydown', function (event) {
         if (event.key == 'ArrowRight') CAMERAX += .1;
         if (event.key == 'ArrowLeft') CAMERAX -= .1;
+        if (event.key == 'ArrowUp') CAMERAY += .1;
+        if (event.key == 'ArrowDown') CAMERAY -= .1;
         viewMatrix.setViewMatrix([CAMERAX, CAMERAY, CAMERAZ]);
     });
 
@@ -101,7 +99,7 @@ function render4(context, nVertices, nObjects, angle, scale, modelMatrix, viewMa
     clearCanvas(context, [.25, .17, .34, 1.0]);
 
     // draw triangles
-    modelMatrix.setScaleMatrix(scale, scale, scale).useViewMatrix(viewMatrix);
+    modelMatrix.setScaleMatrix(scale/2, scale/2, scale/2).rotateMatrix(angle).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nVertices / nObjects);
 
