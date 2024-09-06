@@ -33,17 +33,18 @@ function main4() {
     }
     // vertex data and assign vertices
     const data = new Float32Array([
-         0.0, 0.5, -0.4, 0.87, 0.93, 0.95,
-        -0.5, 0.0, -0.4, 0.90, 0.92, 0.93,
-         0.5, 0.0, -0.4, 0.93, 0.88, 0.87,
 
-         0.0, 0.5, -0.2, 0.87, 0.93, 0.95,
-        -0.5, 0.0, -0.2, 0.90, 0.92, 0.93,
-         0.5, 0.0, -0.2, 0.93, 0.88, 0.87,
+         0.0, 0.5, 0.4, 0.87, 0.93, 0.95,
+        -0.5, 0.0, 0.4, 0.90, 0.92, 0.93,
+         0.5, 0.0, 0.4, 0.93, 0.88, 0.87,
 
-         0.0, 0.5, -0.2, 0.87, 0.93, 0.95,
-        -0.5, 0.0, -0.2, 0.90, 0.92, 0.93,
-         0.5, 0.0, -0.2, 0.93, 0.88, 0.87,
+         0.0, 0.5, 0.2, 0.87, 0.93, 0.95,
+        -0.5, 0.0, 0.2, 0.90, 0.92, 0.93,
+         0.5, 0.0, 0.2, 0.93, 0.88, 0.87,
+
+         0.0, 0.5, 0.2, 0.87, 0.93, 0.95,
+        -0.5, 0.0, 0.2, 0.90, 0.92, 0.93,
+         0.5, 0.0, 0.2, 0.93, 0.88, 0.87,
 
          0.0, 0.5,  0.0, 0.87, 0.93, 0.95,
         -0.5, 0.0,  0.0, 0.90, 0.92, 0.93,
@@ -53,8 +54,8 @@ function main4() {
     // data info
     const nPositionComponents = 3;
     const nColorComponents = 3;
-    const nPoints = data.length / 6;
-    const nObjects = nPoints / 3;
+    const nVertices = data.length / (nPositionComponents+nColorComponents);
+    const nObjects = nVertices / 3;
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
@@ -87,7 +88,7 @@ function main4() {
         [angle, scale] = updateTransformation4(angle, scale);
 
         // render graphics
-        render4(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
+        render4(context, nVertices, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate4);
@@ -95,25 +96,25 @@ function main4() {
     animate4();
 }
 
-function render4(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
+function render4(context, nVertices, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
     clearCanvas(context, [.25, .17, .34, 1.0]);
 
     // draw triangles
     modelMatrix.setScaleMatrix(scale, scale, scale).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, 0, nPoints / nObjects);
+    context.drawArrays(context.LINE_LOOP, 0, nVertices / nObjects);
 
     modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 1 / nObjects, nPoints / nObjects);
+    context.drawArrays(context.LINE_LOOP, nVertices * 1 / nObjects, nVertices / nObjects);
 
     modelMatrix.setRotationMatrix(angle).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints / nObjects);
+    context.drawArrays(context.LINE_LOOP, nVertices * 2 / nObjects, nVertices / nObjects);
 
     modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale / 2, scale, scale / 2).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 3 / nObjects, nPoints / nObjects);
+    context.drawArrays(context.LINE_LOOP, nVertices * 3 / nObjects, nVertices / nObjects);
 }
 
 function updateTransformation4(angle, scale) {
