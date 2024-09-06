@@ -42,8 +42,10 @@ function main2() {
         // triangle 4
          0.0, 0.5, 0.94, 0.27, 0.37,
         -0.5, 0.0, 0.99, 0.96, 0.93,
-         0.5, 0.0, 0.96, 0.51, 0.56
+         0.5, 0.0, 0.96, 0.51, 0.56,
+
     ]);
+    // data info
     const nPositionComponents = 2;
     const nColorComponents = 3;
     const nPoints = data.length / 5;
@@ -86,22 +88,23 @@ function render(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation
     // draw triangle 1 - reset transformation matrix and assign per frame rotation matrix data
     modelMatrix.setRotationMatrix(angle).scaleMatrix(scale, scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.TRIANGLES, 0, nPoints/2);
+    context.drawArrays(context.TRIANGLES, 0, nPoints / 4);
 
     // draw triangle 2
-    modelMatrix.setRotationMatrix(angle/4).scaleMatrix(scale,scale,0);
-    context.uniformMatrix4fv(modelMatrixLocation,false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP,nPoints/2,nPoints/2);
+    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(scale, scale, 0);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints / 4, nPoints / 4);
 
     // draw triangle 3
-    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale,scale,0);
-    context.uniformMatrix4fv(modelMatrixLocation,false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP,nPoints/2,nPoints/2);
+    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale, scale, 0);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints * 2 / 4, nPoints / 2);
 
     // draw triangle 4
-    modelMatrix.setRotationMatrix(-angle/4).scaleMatrix(scale,scale,0);
-    context.uniformMatrix4fv(modelMatrixLocation,false, modelMatrix.elements);
-    context.drawArrays(context.TRIANGLES,nPoints/2,nPoints/2);
+    modelMatrix.setRotationMatrix(-angle / 4).scaleMatrix(scale, scale, 0);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.TRIANGLES, nPoints * 3 / 4, nPoints / 2);
+
 }
 
 // where transformations should be at currently, accounting for changing browser load
