@@ -62,6 +62,8 @@ function main3() {
     let angle = 0;
     let scale = 0;
 
+    initSlider3();
+
     const animate3 = function () {
         // update transformation constants and render vertices
         [angle, scale] = updateTransformation3(angle, scale);
@@ -106,4 +108,14 @@ function updateTransformation3(angle, scale) {
     scale = 1 + Math.sin(angle * Math.PI / 180) * 0.5;
     
     return [angle, scale];
+}
+
+function initSlider3(){
+    const slider=document.getElementById('slider');
+    const speed=document.getElementById('speed');
+
+    slider.addEventListener('input',function(){
+        ROTATIONSPEED3=parseFloat(slider.value);
+        speed.textContent=ROTATIONSPEED3;
+    })
 }
