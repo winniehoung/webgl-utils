@@ -81,7 +81,7 @@ function main4() {
 function render4(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
     clearCanvas(context, [.25, .17, .34, 1.0]);
 
-    modelMatrix.setScaleMatrix(scale, scale, scale);
+    modelMatrix.setViewMatrix([0.25,0.25,0.25]).scaleMatrix(scale, scale, scale);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints / 4);
 
