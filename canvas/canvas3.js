@@ -78,11 +78,11 @@ function main3() {
 function render3(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
     clearCanvas(context, [.85, .17, .27, 1.0]);
 
-    modelMatrix.setRotationMatrix(angle);
+    modelMatrix.setRotationMatrix(180).scaleMatrix(scale,scale,0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints/4);
 
-    modelMatrix.setRotationMatrix(-angle/4).scaleMatrix(scale,scale,0);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale,scale,0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints/4, nPoints/4);
 
@@ -90,7 +90,7 @@ function render3(context, nPoints, angle, scale, modelMatrix, modelMatrixLocatio
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints*2/4, nPoints/4);
 
-    modelMatrix.setRotationMatrix(-angle);
+    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale,scale,0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints*3/4, nPoints/4);
 }
@@ -103,8 +103,7 @@ function updateTransformation3(angle, scale) {
     // rotate at x degrees per second`
     angle = (angle + ROTATIONSPEED3 * timeElapsed / 1000) % 360;
 
-    // map angle value to scale for convenience
-    scale = angle * 2 / 365;
-
+    scale = 1 + Math.sin(angle * Math.PI / 180) * 0.5;
+    
     return [angle, scale];
 }
