@@ -7,7 +7,7 @@
 ### rendering_utils.js
 
 - Boilerplate for shader and buffer initialization
-- In buffer initialization, when parameter is not provided, GLSL attribute variable `gl_Position`defaults to `'vPosition`. Attribute variable name for varying variable `fColor`(vertex colors) defaults to `vColor`. 
+- In buffer initialization, when parameter is not provided, GLSL attribute variable `gl_Position`defaults to `vPosition`. Attribute variable name for varying variable `fColor`(vertex colors) defaults to `vColor`. 
 
 ### matrix_utils.js
 - Matrix prototype and transformations
