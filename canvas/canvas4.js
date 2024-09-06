@@ -7,8 +7,12 @@
  * uniformMatrix4fv(location,transpose=false,data)
  */
 
+// animation constants
 let ROTATIONSPEED4 = 55;
 let TIMESTAMP4 = Date.now();
+
+// view matrix constants
+let CAMERAX = CAMERAY = CAMERAZ = 0;
 
 main4();
 
@@ -62,14 +66,21 @@ function main4() {
 
     // model view matrix 
     let modelMatrix = new Matrix();
-    let viewMatrix = new Matrix().setViewMatrix([.25, .25,.25]);
+    let viewMatrix = new Matrix().setViewMatrix([CAMERAX, CAMERAY, CAMERAZ]);
     const modelViewMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelViewMatrix');
 
     // transformation data, speed in degrees per second
     let angle = 0;
     let scale = 0;
 
+    // event listener for slider
     initSlider4();
+    // event listener for keydown
+    document.addEventListener('keydown', function (event) {
+        if (event.key == 'ArrowRight') CAMERAX += .1;
+        if (event.key == 'ArrowLeft') CAMERAX -= .1;
+        viewMatrix.setViewMatrix([CAMERAX, CAMERAY, CAMERAZ]);
+    });
 
     const animate4 = function () {
         // update transformation constants and render vertices
@@ -118,12 +129,12 @@ function updateTransformation4(angle, scale) {
     return [angle, scale];
 }
 
-function initSlider4(){
-    const slider=document.getElementById('slider');
-    const speed=document.getElementById('speed');
+function initSlider4() {
+    const slider = document.getElementById('slider');
+    const speed = document.getElementById('speed');
 
-    slider.addEventListener('input',function(){
-        ROTATIONSPEED4=parseFloat(slider.value);
-        speed.textContent=ROTATIONSPEED4;
+    slider.addEventListener('input', function () {
+        ROTATIONSPEED4 = parseFloat(slider.value);
+        speed.textContent = ROTATIONSPEED4;
     })
 }
