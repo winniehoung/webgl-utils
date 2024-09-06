@@ -1,9 +1,9 @@
+### Instructions
+- Save repository to file system, then open `canvas.html` in browser
+
 ### canvas.html
 - Example project utilizing rendering and matrix utils
 - Use speed slider to change animation speed
-
-### Instructions
-- Save repository to file system, then open `canvas.html` in browser
 
 ### rendering_utils.js
 
@@ -15,3 +15,10 @@
 - `setViewMatrix` aligns world coordinates to camera coordinates
 - If you call`setViewMatrix`before transforming with `translateMatrix`|`scaleMatrix`|`rotateMatrix`, result will be `translationMatrix * viewMatrix`
 - Properly handle view and transformations by creating a transformation matrix and a view matrix with `setViewMatrix`, then pass view matrix to transformation matrix `useViewMatrix(viewMatrix)`
+
+### General Processing Flow
+1. Get `html` canvas and `webgl` context
+2. Initialize vertex shader and fragment shader
+3. Create buffer, bind data, assign to attribute variable, then enable buffer
+4. Clear canvas
+5. Render
