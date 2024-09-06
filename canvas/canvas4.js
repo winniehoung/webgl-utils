@@ -1,6 +1,10 @@
 /**
  * 'v' prefix for vertex
  * 'f' prefix for fragment
+ * 
+ * common bugs: 
+ * set shader variables but didn't pass data to it
+ * uniformMatrix4fv(location,transpose=false,data)
  */
 
 let ROTATIONSPEED4 = 55;
@@ -14,7 +18,7 @@ function main4() {
     const context = getContext(canvas);
 
     // shader programs
-    const vShaderSrc = 'attribute vec4 vPosition; attribute vec4 vColor; varying vec4 fColor; uniform mat4 modelMatrix; void main(void){gl_Position=modelMatrix*vPosition; fColor=vColor;}';
+    const vShaderSrc = 'attribute vec4 vPosition; attribute vec4 vColor; varying vec4 fColor; uniform mat4 viewMatrix; uniform mat4 modelMatrix; void main(void){gl_Position=viewMatrix*modelMatrix*vPosition; fColor=vColor;}';
 
     const fShaderSrc = 'precision mediump float; varying vec4 fColor; void main(void){gl_FragColor=fColor;}';
 
@@ -59,6 +63,13 @@ function main4() {
     let modelMatrix = new Matrix();
     const modelMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelMatrix');
 
+    // view matrix and location
+    let viewMatrix = new Matrix();
+    const viewMatrixLocation = context.getUniformLocation(context.shaderProgram, 'viewMatrix');
+    // set view matrix
+    viewMatrix.setViewMatrix([0.25, 0.25, 0.25]);
+    context.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix.elements);
+
     // transformation data, speed in degrees per second
     let angle = 0;
     let scale = 0;
@@ -81,21 +92,22 @@ function main4() {
 function render4(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
     clearCanvas(context, [.25, .17, .34, 1.0]);
 
-    modelMatrix.setViewMatrix([0.25,0.25,0.25]).scaleMatrix(scale, scale, scale);
+    // draw triangles
+    modelMatrix.setScaleMatrix(scale, scale, scale);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints / 4);
 
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale/2,scale/2,scale/2);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints/4, nPoints/4);
+    context.drawArrays(context.LINE_LOOP, nPoints / 4, nPoints / 4);
 
     modelMatrix.setRotationMatrix(angle);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints*2/4, nPoints/4);
+    context.drawArrays(context.LINE_LOOP, nPoints * 2 / 4, nPoints / 4);
 
-    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale/2,scale,scale/2);
+    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale / 2, scale, scale / 2);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints*3/4, nPoints/4);
+    context.drawArrays(context.LINE_LOOP, nPoints * 3 / 4, nPoints / 4);
 }
 
 function updateTransformation4(angle, scale) {
