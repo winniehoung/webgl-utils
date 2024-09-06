@@ -18,7 +18,7 @@ function main4() {
     const context = getContext(canvas);
 
     // shader programs
-    const vShaderSrc = 'attribute vec4 vPosition; attribute vec4 vColor; varying vec4 fColor; uniform mat4 viewMatrix; uniform mat4 modelMatrix; void main(void){gl_Position=viewMatrix*modelMatrix*vPosition; fColor=vColor;}';
+    const vShaderSrc = 'attribute vec4 vPosition; attribute vec4 vColor; varying vec4 fColor; uniform mat4 modelViewMatrix; void main(void){gl_Position=modelViewMatrix*vPosition; fColor=vColor;}';
 
     const fShaderSrc = 'precision mediump float; varying vec4 fColor; void main(void){gl_FragColor=fColor;}';
 
@@ -50,6 +50,7 @@ function main4() {
     const nPositionComponents = 3;
     const nColorComponents = 3;
     const nPoints = data.length / 6;
+    const nObjects = nPoints / 3;
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
@@ -59,16 +60,10 @@ function main4() {
         return false;
     }
 
-    // model matrix and location
+    // model view matrix 
     let modelMatrix = new Matrix();
-    const modelMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelMatrix');
-
-    // view matrix and location
-    let viewMatrix = new Matrix();
-    const viewMatrixLocation = context.getUniformLocation(context.shaderProgram, 'viewMatrix');
-    // set view matrix
-    viewMatrix.setViewMatrix([0.25, 0.25, 0.25]);
-    context.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix.elements);
+    let viewMatrix = new Matrix().setViewMatrix([.25, .25,.25]);
+    const modelViewMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelViewMatrix');
 
     // transformation data, speed in degrees per second
     let angle = 0;
@@ -81,7 +76,7 @@ function main4() {
         [angle, scale] = updateTransformation4(angle, scale);
 
         // render graphics
-        render4(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation);
+        render4(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate4);
@@ -89,25 +84,25 @@ function main4() {
     animate4();
 }
 
-function render4(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
+function render4(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
     clearCanvas(context, [.25, .17, .34, 1.0]);
 
     // draw triangles
-    modelMatrix.setScaleMatrix(scale, scale, scale);
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, 0, nPoints / 4);
+    modelMatrix.setScaleMatrix(scale, scale, scale).useViewMatrix(viewMatrix);
+    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, 0, nPoints / nObjects);
 
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2);
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints / 4, nPoints / 4);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
+    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints * 1 / nObjects, nPoints / nObjects);
 
-    modelMatrix.setRotationMatrix(angle);
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 2 / 4, nPoints / 4);
+    modelMatrix.setRotationMatrix(angle).useViewMatrix(viewMatrix);
+    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints / nObjects);
 
-    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale / 2, scale, scale / 2);
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 3 / 4, nPoints / 4);
+    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale / 2, scale, scale / 2).useViewMatrix(viewMatrix);
+    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints * 3 / nObjects, nPoints / nObjects);
 }
 
 function updateTransformation4(angle, scale) {

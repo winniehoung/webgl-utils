@@ -63,7 +63,8 @@ Matrix.prototype.mMultiply = function (transformMatrix) {
  * @param {number} camera - starting point from which 3D space viewed
  * @param {number} point - look-at point, together with camera determines direction of line of sight
  * @param {number} up - up direction while viewing from camera to point
- * this section constructs view matrix:
+ * this section constructs and sets view matrix:
+ * 
  * 3x3 rotation component rotates world coordinates to align with camera coordinates
  * 3x1 (row order) translation component moves world in opposite direction (of camera translation) so camera is positioned at the origin
  * 
@@ -124,6 +125,11 @@ Matrix.prototype.setViewMatrix = function ([cameraX = 0, cameraY = 0, cameraZ = 
     this.elements[14] = forwardX * cameraX + forwardY * cameraY + forwardZ * cameraZ;
     this.elements[15] = 1;
 
+    return this;
+}
+
+Matrix.prototype.useViewMatrix = function (viewMatrix) {
+    this.mMultiply(viewMatrix);
     return this;
 }
 

@@ -13,4 +13,5 @@
 ### matrix_utils.js
 - Matrix prototype and transformations
 - `setViewMatrix` aligns world coordinates to camera coordinates
-- If you want to set camera view that is not at the default origin, call `setViewMatrix`before transforming with `translateMatrix`, `scaleMatrix`, `rotateMatrix`
+- If you call`setViewMatrix`before transforming with `translateMatrix`|`scaleMatrix`|`rotateMatrix`, result will be `translationMatrix * viewMatrix`
+- Properly handle view and transformations by creating a view matrix with `setViewMatrix`and a transformation matrix with `translateMatrix | setTranslationMatrix, scaleMatrix | setScaleMatrix, rotateMatrix | setRotationMatrix`, then pass view matrix to transformation matrix `transformationMatrix(viewMatrix)`
