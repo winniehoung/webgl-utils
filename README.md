@@ -1,5 +1,6 @@
 ### canvas.html
 - Example project utilizing rendering and matrix utils
+- Use speed slider to change animation speed
 
 ### Instructions
 - Save repository to file system, then open `canvas.html` in browser
