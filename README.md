@@ -5,3 +5,4 @@
 
 ### matrix_utils.js
 - matrix prototype and transformations
+- `setViewMatrix` aligns world coordinates to camera coordinates
