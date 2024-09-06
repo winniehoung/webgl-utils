@@ -45,7 +45,7 @@ function main4() {
     // data info
     const nPositionComponents = 3;
     const nColorComponents = 3;
-    const nPoints = data.length / 5;
+    const nPoints = data.length / 6;
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
@@ -89,9 +89,9 @@ function render4(context, nPoints, angle, scale, modelMatrix, modelMatrixLocatio
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints/4, nPoints/4);
 
-    // modelMatrix.setRotationMatrix(angle);
-    // context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    // context.drawArrays(context.TRIANGLES, nPoints*2/4, nPoints/4);
+    modelMatrix.setRotationMatrix(angle);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, nPoints*2/4, nPoints/4);
 
     modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale/2,scale,scale/2);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
