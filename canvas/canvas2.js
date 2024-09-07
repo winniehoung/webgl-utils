@@ -36,7 +36,7 @@ function main2() {
     // starting angle
     let theta = 0;
     // return cartesian coordinates
-    const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta), z: r * Math.cos(theta) });
+    const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta), z: r * Math.sin(theta) });
 
     // populate flower vertices
     for (let i = 0; i < length; i += 6) {

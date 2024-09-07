@@ -137,19 +137,19 @@ function render4(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatr
     clearCanvas(context, [.25, .17, .34, 1.0]);
 
     // draw triangles
-    modelMatrix.setScaleMatrix(scale / 2, scale / 2, scale / 2).rotateMatrix(angle).useViewMatrix(viewMatrix);
+    modelMatrix.setScaleMatrix(scale / 2, scale / 2, scale / 2).rotateMatrix(-angle).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints / nObjects);
 
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints * 1 / nObjects, nPoints / nObjects);
 
-    modelMatrix.setRotationMatrix(angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(-angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints / nObjects);
 
-    modelMatrix.setRotationMatrix(angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(-angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints * 3 / nObjects, nPoints / nObjects);
 
