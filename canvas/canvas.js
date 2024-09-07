@@ -54,14 +54,14 @@ function createClickHandler() {
         const maxY = canvas.height / 2;
 
         // webgl canvas normalized coordinates
-        const x = ((clientX - rect.left) - maxX) / maxX;
-        const y = (maxY - (clientY - rect.top)) / maxY;
+        const Tx = ((clientX - rect.left) - maxX) / maxX;
+        const Ty = (maxY - (clientY - rect.top)) / maxY;
 
         // store data points
-        vPoints.push([x, y]);
+        vPoints.push([Tx, Ty]);
 
         // animation
-        createSpiral(Tx, Ty, modelMatrix, modelMatrixLocation);
+        createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation);
 
         // clear canvas
         clearCanvas(context, [.95, .62, .1, 1.0]);
@@ -73,7 +73,7 @@ function createClickHandler() {
     }
 }
 
-function createSpiral(Tx, Ty, modelMatrix, modelMatrixLocation) {
+function createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
     // spiral data info and populate vertices
     const nPoints = 1000;
     const nPositionComponents = 2;
@@ -88,8 +88,8 @@ function createSpiral(Tx, Ty, modelMatrix, modelMatrixLocation) {
     const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta) });
 
     for (let i = 0; i < length; i += 5) {
-        theta += 2 * Math.PI / nPoints;
-        const r = Math.sin(6 * theta);
+        theta += 10 * Math.PI / nPoints;
+        const r = 0.04+0.02*theta;
         const { x, y } = polar2Cartesian(r, theta);
         spiral[i] = x;
         spiral[i + 1] = y;
@@ -99,11 +99,28 @@ function createSpiral(Tx, Ty, modelMatrix, modelMatrixLocation) {
     }
 
     // init buffers and pass data to locations
-    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents])) {
+    if (!initVertexBuffer(context, spiral, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents])) {
 
         console.error('could not initialize vertex buffer');
         return false;
     }
+
+    // animation constants
+    let angle = scale = 0;
+    const animate = function () {
+        ({ angle, scale } = updateTransformation(angle, scale));
+
+        // transform matrix and pass to attribute location
+        modelMatrix.setRotationMatrix(angle).scaleMatrix(1-scale, 1-scale, 0).translateMatrix(Tx, Ty, 0);
+        context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+
+        // clear canvas and draw
+        clearCanvas(context, [.95, .62, .1, 1.0]);
+        context.drawArrays(context.LINE_LOOP, 0, nPoints);
+
+        requestAnimationFrame(animate);
+    }
+    animate();
 }
 
 function updateTransformation(angle, scale) {
@@ -115,7 +132,7 @@ function updateTransformation(angle, scale) {
     angle = (angle + ROTATIONSPEED * timeElapsed / 1000) % 360;
 
     // map angle value to scale for convenience
-    scale = 1 + 0.5 * Math.sin(angle * Math.PI/180);
+    scale = 1 + 0.5 * Math.sin(angle * Math.PI / 180);
 
-    return {angle, scale};
+    return { angle, scale };
 }
