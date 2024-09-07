@@ -4,7 +4,7 @@
 ### canvas.html
 - Example project utilizing rendering and matrix utils
 - Use speed slider to change animation speed
-- Press arrow keys for a surprise
+- Click on first canvas for a surprise (also try clicking arrow keys)
 
 ### rendering_utils.js
 
@@ -19,7 +19,7 @@
 
 ### General Processing Flow
 1. Get `html` canvas and `webgl` context
-2. Compile shader source and link to shader program, then assign shader program to `webgl` context
-3. Create buffer, bind buffer, write data, assign to attribute variable, then enable buffer assignment
-4. Clear canvas
+2. Compile shader source and link to shader program, then assign shader program to `webgl` context (`rendering_utils.js`)
+3. Create buffer, bind buffer, write data, assign to attribute variable, then enable buffer assignment (`rendering_utils.js`)
+4. Clear canvas 
 5. Render

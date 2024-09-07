@@ -87,7 +87,8 @@ function createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
 
     for (let i = 0; i < length; i += 5) {
         theta += 10 * Math.PI / nPoints;
-        const r = 0.04 + 0.02 * theta;
+        // const r = 0.04 + 0.02 * theta;
+        const r=Math.sin(1.2*theta)*Math.sin(1.2*theta)+Math.cos(6*theta)*Math.cos(6*theta);
         const { x, y } = polar2Cartesian(r, theta);
         spiral[i] = x;
         spiral[i + 1] = y;
