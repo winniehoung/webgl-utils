@@ -7,6 +7,7 @@
 let ROTATION_SPEED = 50;
 let TIMESTAMP = Date.now();
 let ANIMATION_DURATION = 6;
+let ANIMATING = false;
 
 main(); // function hoisting in JS
 
@@ -36,7 +37,11 @@ function main() {
     const clickHandler = createClickHandler();
 
     canvas.addEventListener('click', function (event) {
-        clickHandler(event, canvas, context, new Matrix(), modelMatrixLocation);
+        if (!ANIMATING) {
+            ANIMATING = true;
+            clickHandler(event, canvas, context, new Matrix(), modelMatrixLocation);
+
+        }
         clearCanvas(context, [.97, .75, .27, 1]);
     });
 }
@@ -61,6 +66,7 @@ function createClickHandler() {
 
         // animation returns after ANIMATION DURATION
         createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation);
+
     }
 }
 
@@ -118,6 +124,8 @@ function createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
             requestAnimationFrame(animate);
         } else {
             clearCanvas(context, [.97, .75, .27, 1]);
+            ANIMATING = false;
+
         }
         return;
     }
