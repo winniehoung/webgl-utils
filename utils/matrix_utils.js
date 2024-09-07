@@ -140,17 +140,17 @@ Matrix.prototype.useViewMatrix = function (viewMatrix) {
  * this section transforms the model matrix by matrix multiplication
  */
 
-Matrix.prototype.translateMatrix = function (Tx, Ty, Tz) {
+Matrix.prototype.translateMatrix = function (Tx = 0, Ty = 0, Tz = 0) {
     this.mMultiply(new Matrix().setTranslationMatrix(Tx, Ty, Tz));
     return this;
 }
 
-Matrix.prototype.scaleMatrix = function (Sx, Sy, Sz) {
+Matrix.prototype.scaleMatrix = function (Sx = 1, Sy = 1, Sz = 1) {
     this.mMultiply(new Matrix().setScaleMatrix(Sx, Sy, Sz));
     return this;
 }
 
-Matrix.prototype.rotateMatrix = function (angle) {
+Matrix.prototype.rotateMatrix = function (angle = 0) {
     this.mMultiply(new Matrix().setRotationMatrix(angle));
     return this;
 }
@@ -162,7 +162,7 @@ Matrix.prototype.rotateMatrix = function (angle) {
  * this section is functions that return transformation matrices;
  */
 
-Matrix.prototype.setTranslationMatrix = function (Tx, Ty, Tz) {
+Matrix.prototype.setTranslationMatrix = function (Tx = 0, Ty = 0, Tz = 0) {
     if (!this.isIdentity) {
         this.elements = this.getIdentityMatrix();
     }
@@ -173,11 +173,7 @@ Matrix.prototype.setTranslationMatrix = function (Tx, Ty, Tz) {
     return this;
 }
 
-Matrix.prototype.setScaleMatrix = function (Sx, Sy, Sz) {
-    if (arguments.length < 3) {
-        console.error('${arguments.length} arguments provided, 3 needed');
-        return this;
-    }
+Matrix.prototype.setScaleMatrix = function (Sx = 1, Sy = 1, Sz = 1) {
     if (!this.isIdentity) {
         this.elements = this.getIdentityMatrix();
     }
@@ -189,7 +185,7 @@ Matrix.prototype.setScaleMatrix = function (Sx, Sy, Sz) {
     return this;
 }
 
-Matrix.prototype.setRotationMatrix = function (angle) { //currently about z-axis
+Matrix.prototype.setRotationMatrix = function (angle = 0) { //currently about z-axis
     if (!this.isIdentity) {
         this.elements = this.getIdentityMatrix();
     }

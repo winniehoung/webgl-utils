@@ -3,8 +3,8 @@
  * 'f' prefix for fragment
  */
 
-let ROTATIONSPEED = 50;
-let TIMESTAMP = Date.now();
+let ROTATIONSPEED2 = 50;
+let TIMESTAMP2 = Date.now();
 main2();
 
 function main2() {
@@ -27,14 +27,15 @@ function main2() {
     // number of points PER FLOWER
     const nPoints = 1000;
     // npoints * (n indices needed per point)
-    const length=nPoints*5;
+    const length = nPoints * 5;
     const flower = new Float32Array(length);
+    // starting angle
     let theta = 0;
     // return cartesian coordinates
     const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta) });
 
     // populate flower vertices
-    for (let i = 0; i < length; i+=5) {
+    for (let i = 0; i < length; i += 5) {
         theta += 2 * Math.PI / nPoints;
         const r = Math.sin(6 * theta);
         const { x, y } = polar2Cartesian(r, theta);
@@ -46,8 +47,8 @@ function main2() {
     }
 
     // data for canvas of 2 flowers
-    const nObjects=2;
-    data=new Float32Array(length*2);
+    const nObjects = 2;
+    data = new Float32Array(length * 2);
     data.set(flower);
     data.set(flower, flower.length);
 
@@ -57,7 +58,8 @@ function main2() {
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
-    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * 5, [0, nBytes * 2])) {
+    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents])) {
+
         console.error('could not assign vertices');
         return false;
     }
@@ -73,17 +75,17 @@ function main2() {
     // initialize slider event listener
     initSlider();
 
-    const animate = function () {
+    const animate2 = function () {
         // update transformation constants and render vertices
-        [angle, scale] = updateTransformation(angle, scale);
+        ({ angle, scale } = updateTransformation2(angle, scale));
 
         // render graphics
         render(context, nPoints, nObjects, angle, scale, modelMatrix, modelMatrixLocation);
 
         // on 60hz browser, called 60 times/second
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animate2);
     }
-    animate();
+    animate2();
 }
 
 function render(context, nPoints, nObjects, angle, scale, modelMatrix, modelMatrixLocation) {
@@ -91,38 +93,38 @@ function render(context, nPoints, nObjects, angle, scale, modelMatrix, modelMatr
     clearCanvas(context, [.2, 0.31, 0.36, 1.0]);
 
     // draw triangle 1 - reset transformation matrix and assign per frame rotation matrix data
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale, scale, 0);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints);
 
     // draw triangle 2
-    modelMatrix.setRotationMatrix(angle/4).scaleMatrix(1-scale, 1-scale, 0);
+    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(1 - scale, 1 - scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints / nObjects, nPoints);
 
 }
 
 // where transformations should be at currently, accounting for changing browser load
-function updateTransformation(angle, scale) {
+function updateTransformation2(angle, scale) {
     const now = Date.now()
-    const timeElapsed = now - TIMESTAMP;
-    TIMESTAMP = now;
+    const timeElapsed = now - TIMESTAMP2;
+    TIMESTAMP2 = now;
 
     // rotate at x degrees per second`
-    angle = (angle + ROTATIONSPEED * timeElapsed / 1000) % 360;
+    angle = (angle + ROTATIONSPEED2 * timeElapsed / 1000) % 360;
 
     // map angle value to scale for convenience
-    scale = angle * 2 / 365;
+    scale = 1 + 0.5 * Math.sin(angle * Math.PI / 180);
 
-    return [angle, scale];
+    return { angle, scale };
 }
 
-function initSlider(){
-    const slider=document.getElementById('slider');
-    const speed=document.getElementById('speed');
+function initSlider() {
+    const slider = document.getElementById('slider');
+    const speed = document.getElementById('speed');
 
-    slider.addEventListener('input',function(){
-        ROTATIONSPEED=parseFloat(slider.value);
-        speed.textContent=ROTATIONSPEED;
+    slider.addEventListener('input', function () {
+        ROTATIONSPEED = parseFloat(slider.value);
+        speed.textContent = ROTATIONSPEED;
     })
 }
