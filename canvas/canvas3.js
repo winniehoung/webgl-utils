@@ -28,61 +28,61 @@ function main3() {
     }
     // vertex data and assign vertices
     const data = new Float32Array([
-        0.0, 0.5,  0.8, 1, 0.84, 0.2,
-        0.5, 0.0,  0.3, 1, 0.84, 0.2,
-        0.5, 0.0,  1.0, 1, 0.84, 0.2,
-        0.0, 0.5,  0.8, 1, 0.84, 0.2,
-       -0.5, 0.0,  1.0, 1, 0.84, 0.2,
-        0.5, 0.0,  1.0, 1, 0.84, 0.2,
-       -0.5, 0.0,  1.0, 1, 0.84, 0.2,
-       -0.5, 0.0,  0.3, 1, 0.84, 0.2,
-        0.0, 0.5,  0.8, 1, 0.84, 0.2,
-       -0.5, 0.0,  0.3, 1, 0.84, 0.2,
-        0.5, 0.0,  0.3, 1, 0.84, 0.2,
+        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
+        0.5, 0.0,  0.3, 0.94, 0.95, 0.96,
+        0.5, 0.0,  1.0, 0.94, 0.95, 0.96,
+        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
+       -0.5, 0.0,  1.0, 0.94, 0.95, 0.96,
+        0.5, 0.0,  1.0, 0.94, 0.95, 0.96,
+       -0.5, 0.0,  1.0, 0.94, 0.95, 0.96,
+       -0.5, 0.0,  0.3, 0.94, 0.95, 0.96,
+        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
+       -0.5, 0.0,  0.3, 0.94, 0.95, 0.96,
+        0.5, 0.0,  0.3, 0.94, 0.95, 0.96,
 
-        0.0, 0.5,  0.8, 1, 0.84, 0.2,
-        0.5, 0.9,  0.3, 1, 0.84, 0.2,
-        0.5, 0.9,  1.0, 1, 0.84, 0.2,
-        0.0, 0.5,  0.8, 1, 0.84, 0.2,
-       -0.5, 0.9,  1.0, 1, 0.84, 0.2,
-        0.5, 0.9,  1.0, 1, 0.84, 0.2,
-       -0.5, 0.9,  1.0, 1, 0.84, 0.2,
-       -0.5, 0.9,  0.3, 1, 0.84, 0.2,
-        0.0, 0.5,  0.8, 1, 0.84, 0.2,
-       -0.5, 0.9,  0.3, 1, 0.84, 0.2,
-        0.5, 0.9,  0.3, 1, 0.84, 0.2,
+        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
+        0.5, 0.9,  0.3, 0.94, 0.95, 0.96,
+        0.5, 0.9,  1.0, 0.94, 0.95, 0.96,
+        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
+       -0.5, 0.9,  1.0, 0.94, 0.95, 0.96,
+        0.5, 0.9,  1.0, 0.94, 0.95, 0.96,
+       -0.5, 0.9,  1.0, 0.94, 0.95, 0.96,
+       -0.5, 0.9,  0.3, 0.94, 0.95, 0.96,
+        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
+       -0.5, 0.9,  0.3, 0.94, 0.95, 0.96,
+        0.5, 0.9,  0.3, 0.94, 0.95, 0.96,
 
-        0.5, 0.5,  0.8, 1, 0.84, 0.2,
-        1.0, 0.0,  0.3, 1, 0.84, 0.2,
-        1.0, 0.0,  1.0, 1, 0.84, 0.2,
-        0.5, 0.5,  0.8, 1, 0.84, 0.2,
-        0.0, 0.0,  1.0, 1, 0.84, 0.2,
-        1.0, 0.0,  1.0, 1, 0.84, 0.2,
-        0.0, 0.0,  1.0, 1, 0.84, 0.2,
-        0.0, 0.0,  0.3, 1, 0.84, 0.2,
-        0.5, 0.5,  0.8, 1, 0.84, 0.2,
-        0.0, 0.0,  0.3, 1, 0.84, 0.2,
-        1.0, 0.0,  0.3, 1, 0.84, 0.2,
+        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
+        1.0, 0.0,  0.3, 0.94, 0.95, 0.96,
+        1.0, 0.0,  1.0, 0.94, 0.95, 0.96,
+        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
+        0.0, 0.0,  1.0, 0.94, 0.95, 0.96,
+        1.0, 0.0,  1.0, 0.94, 0.95, 0.96,
+        0.0, 0.0,  1.0, 0.94, 0.95, 0.96,
+        0.0, 0.0,  0.3, 0.94, 0.95, 0.96,
+        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
+        0.0, 0.0,  0.3, 0.94, 0.95, 0.96,
+        1.0, 0.0,  0.3, 0.94, 0.95, 0.96,
 
-        0.5, 0.5,  0.8, 1, 0.84, 0.2,
-        1.0, 0.9,  0.3, 1, 0.84, 0.2,
-        1.0, 0.9,  1.0, 1, 0.84, 0.2,
-        0.5, 0.5,  0.8, 1, 0.84, 0.2,
-        0.0, 0.9,  1.0, 1, 0.84, 0.2,
-        1.0, 0.9,  1.0, 1, 0.84, 0.2,
-        0.0, 0.9,  1.0, 1, 0.84, 0.2,
-        0.0, 0.9,  0.3, 1, 0.84, 0.2,
-        0.5, 0.5,  0.8, 1, 0.84, 0.2,
-        0.0, 0.9,  0.3, 1, 0.84, 0.2,
-        1.0, 0.9,  0.3, 1, 0.84, 0.2,
+        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
+        1.0, 0.9,  0.3, 0.94, 0.95, 0.96,
+        1.0, 0.9,  1.0, 0.94, 0.95, 0.96,
+        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
+        0.0, 0.9,  1.0, 0.94, 0.95, 0.96,
+        1.0, 0.9,  1.0, 0.94, 0.95, 0.96,
+        0.0, 0.9,  1.0, 0.94, 0.95, 0.96,
+        0.0, 0.9,  0.3, 0.94, 0.95, 0.96,
+        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
+        0.0, 0.9,  0.3, 0.94, 0.95, 0.96,
+        1.0, 0.9,  0.3, 0.94, 0.95, 0.96,
     ]);
 
     // data info
     const nPositionComponents = 3;
     const nColorComponents = 3;
-    const nVertices = data.length / (nPositionComponents+nColorComponents);
+    const nPoints = data.length / (nPositionComponents+nColorComponents);
     // divide by number of vertices in an object
-    const nObjects = nVertices / 11;
+    const nObjects = nPoints / 11;
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
@@ -114,10 +114,10 @@ function main3() {
 
     const animate3 = function () {
         // update transformation constants and render vertices
-        [angle, scale] = updateTransformation3(angle, scale);
+        ({angle, scale} = updateTransformation3(angle, scale));
 
         // render graphics
-        render3(context, nVertices, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
+        render3(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate3);
@@ -125,25 +125,25 @@ function main3() {
     animate3();
 }
 
-function render3(context, nVertices, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
+function render3(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
     clearCanvas(context, [.85, .17, .27, 1.0]);
     
     // draw triangles
     modelMatrix.setScaleMatrix(scale / 2, scale / 2, scale / 2).rotateMatrix(angle).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, 0, nVertices / nObjects);
+    context.drawArrays(context.LINE_LOOP, 0, nPoints / nObjects);
 
     modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nVertices * 1 / nObjects, nVertices / nObjects);
+    context.drawArrays(context.LINE_LOOP, nPoints * 1 / nObjects, nPoints / nObjects);
 
     modelMatrix.setRotationMatrix(angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nVertices * 2 / nObjects, nVertices / nObjects);
+    context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints / nObjects);
 
     modelMatrix.setRotationMatrix(angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nVertices * 3 / nObjects, nVertices / nObjects);
+    context.drawArrays(context.LINE_LOOP, nPoints * 3 / nObjects, nPoints / nObjects);
 }
 
 function updateTransformation3(angle, scale) {
@@ -156,7 +156,7 @@ function updateTransformation3(angle, scale) {
 
     scale = 1 + Math.sin(angle * Math.PI / 180) * 0.5;
     
-    return [angle, scale];
+    return {angle, scale};
 }
 
 function initSlider3(){

@@ -22,34 +22,38 @@ function main2() {
         console.error('failed to initialize shaders');
         return;
     }
-    // vertex data and assign vertices
-    const data = new Float32Array([
-        // triangle 1
-         0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.94, 0.27, 0.37,
-         0.5, 0.0, 0.94, 0.27, 0.37,
 
-        // triangle 2
-         0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.94, 0.27, 0.37,
-         0.5, 0.0, 0.94, 0.27, 0.37,
+    // flower data and assign vertices
+    // number of points PER FLOWER
+    const nPoints = 1000;
+    // npoints * (n indices needed per point)
+    const length=nPoints*5;
+    const flower = new Float32Array(length);
+    let theta = 0;
+    // return cartesian coordinates
+    const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta) });
 
-        // triangle 3
-         0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.94, 0.27, 0.37,
-         0.5, 0.0, 0.94, 0.27, 0.37,
+    // populate flower vertices
+    for (let i = 0; i < length; i+=5) {
+        theta += 2 * Math.PI / nPoints;
+        const r = Math.sin(6 * theta);
+        const { x, y } = polar2Cartesian(r, theta);
+        flower[i] = x;
+        flower[i + 1] = y;
+        flower[i + 2] = 0.98;
+        flower[i + 3] = 0.95;
+        flower[i + 4] = 0.92;
+    }
 
-        // triangle 4
-         0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.94, 0.27, 0.37,
-         0.5, 0.0, 0.94, 0.27, 0.37,
+    // data for canvas of 2 flowers
+    const nObjects=2;
+    data=new Float32Array(length*2);
+    data.set(flower);
+    data.set(flower, flower.length);
 
-    ]);
     // data info
     const nPositionComponents = 2;
     const nColorComponents = 3;
-    const nPoints = data.length / 5;
-    const nObjects = nPoints / 3;
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
@@ -89,22 +93,12 @@ function render(context, nPoints, nObjects, angle, scale, modelMatrix, modelMatr
     // draw triangle 1 - reset transformation matrix and assign per frame rotation matrix data
     modelMatrix.setRotationMatrix(angle).scaleMatrix(scale, scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, 0, nPoints / nObjects);
+    context.drawArrays(context.LINE_LOOP, 0, nPoints);
 
     // draw triangle 2
-    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(scale, scale, 0);
+    modelMatrix.setRotationMatrix(angle/4).scaleMatrix(1-scale, 1-scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints / nObjects, nPoints / nObjects);
-
-    // draw triangle 3
-    modelMatrix.setRotationMatrix(-angle / 4).scaleMatrix(scale, scale, 0);
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints / nObjects);
-
-    // draw triangle 4
-    modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale, scale, 0);
-    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 3 / nObjects, nPoints / nObjects);
+    context.drawArrays(context.LINE_LOOP, nPoints / nObjects, nPoints);
 
 }
 
