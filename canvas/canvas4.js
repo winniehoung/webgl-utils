@@ -12,9 +12,9 @@ let ROTATIONSPEED4 = 55;
 let TIMESTAMP4 = Date.now();
 
 // view matrix constants
-let CAMERAX=0.25;
-let CAMERAY=0.25;
-let CAMERAZ=0.25;
+let CAMERAX = 0.25;
+let CAMERAY = 0.25;
+let CAMERAZ = 0.25;
 
 main4();
 

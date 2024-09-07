@@ -26,29 +26,30 @@ function main2() {
     const data = new Float32Array([
         // triangle 1
          0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.97, 0.45, 0.24,
-         0.5, 0.0, 0.96, 0.51, 0.56,
+        -0.5, 0.0, 0.94, 0.27, 0.37,
+         0.5, 0.0, 0.94, 0.27, 0.37,
 
         // triangle 2
          0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.97, 0.45, 0.24,
-         0.5, 0.0, 0.96, 0.51, 0.56,
+        -0.5, 0.0, 0.94, 0.27, 0.37,
+         0.5, 0.0, 0.94, 0.27, 0.37,
 
         // triangle 3
          0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.97, 0.45, 0.24,
-         0.5, 0.0, 0.96, 0.51, 0.56,
+        -0.5, 0.0, 0.94, 0.27, 0.37,
+         0.5, 0.0, 0.94, 0.27, 0.37,
 
         // triangle 4
          0.0, 0.5, 0.94, 0.27, 0.37,
-        -0.5, 0.0, 0.97, 0.45, 0.24,
-         0.5, 0.0, 0.96, 0.51, 0.56,
+        -0.5, 0.0, 0.94, 0.27, 0.37,
+         0.5, 0.0, 0.94, 0.27, 0.37,
 
     ]);
     // data info
     const nPositionComponents = 2;
     const nColorComponents = 3;
     const nPoints = data.length / 5;
+    const nObjects = nPoints / 3;
     const nBytes = data.BYTES_PER_ELEMENT;
 
     // buffer links to vertex shader
@@ -73,7 +74,7 @@ function main2() {
         [angle, scale] = updateTransformation(angle, scale);
 
         // render graphics
-        render(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation);
+        render(context, nPoints, nObjects, angle, scale, modelMatrix, modelMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate);
@@ -81,29 +82,29 @@ function main2() {
     animate();
 }
 
-function render(context, nPoints, angle, scale, modelMatrix, modelMatrixLocation) {
+function render(context, nPoints, nObjects, angle, scale, modelMatrix, modelMatrixLocation) {
     // clear canvas
     clearCanvas(context, [.2, 0.31, 0.36, 1.0]);
 
     // draw triangle 1 - reset transformation matrix and assign per frame rotation matrix data
     modelMatrix.setRotationMatrix(angle).scaleMatrix(scale, scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.TRIANGLES, 0, nPoints / 4);
+    context.drawArrays(context.LINE_LOOP, 0, nPoints / nObjects);
 
     // draw triangle 2
     modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(scale, scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints / 4, nPoints / 4);
+    context.drawArrays(context.LINE_LOOP, nPoints / nObjects, nPoints / nObjects);
 
     // draw triangle 3
     modelMatrix.setRotationMatrix(-angle / 4).scaleMatrix(scale, scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 2 / 4, nPoints / 2);
+    context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints / nObjects);
 
     // draw triangle 4
     modelMatrix.setRotationMatrix(-angle).scaleMatrix(scale, scale, 0);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.TRIANGLES, nPoints * 3 / 4, nPoints / 2);
+    context.drawArrays(context.LINE_LOOP, nPoints * 3 / nObjects, nPoints / nObjects);
 
 }
 
