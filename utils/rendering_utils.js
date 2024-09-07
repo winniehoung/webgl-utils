@@ -42,6 +42,7 @@ function initVertexBuffer(context, data, [vPosition = 'vPosition', vColor = ''] 
 
     context.bindBuffer(context.ARRAY_BUFFER, buffer);
     context.bufferData(context.ARRAY_BUFFER, data, context.STATIC_DRAW);
+    (context.getError()!==context.NO_ERROR) && console.error('could not bind buffer data');
 
     // get position location, assign and enable buffer
     const positionLocation = context.getAttribLocation(context.shaderProgram, vPosition);

@@ -3,8 +3,11 @@
  * 'f' prefix for fragment
  */
 
-let ROTATIONSPEED = 50;
+// degrees per second
+let ROTATION_SPEED = 50;
 let TIMESTAMP = Date.now();
+let ANIMATION_DURATION = 6;
+
 main(); // function hoisting in JS
 
 function main() {
@@ -24,7 +27,6 @@ function main() {
     }
 
     // model matrix and location
-    const modelMatrix = new Matrix();
     const modelMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelMatrix');
 
     // clear canvas
@@ -34,12 +36,9 @@ function main() {
     const clickHandler = createClickHandler();
 
     canvas.addEventListener('click', function (event) {
-        clickHandler(event, canvas, context, modelMatrix, modelMatrixLocation);
-    });
-
-    canvas.addEventListener('mouseleave', function () {
+        clickHandler(event, canvas, context, new Matrix(), modelMatrixLocation);
         clearCanvas(context, [.97, .75, .27, 1]);
-    })
+    });
 }
 // task during click event
 function createClickHandler() {
@@ -60,20 +59,13 @@ function createClickHandler() {
         // store data points
         vPoints.push([Tx, Ty]);
 
-        // animation
+        // animation returns after ANIMATION DURATION
         createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation);
-
-        // clear canvas
-        clearCanvas(context, [.95, .62, .1, 1.0]);
-
-        // draw points on clicks
-        for (let i = 0; i < vPoints.length; i++) {
-            context.drawArrays(context.POINTS, 0, 1);
-        }
     }
 }
 
 function createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
+
     // spiral data info and populate vertices
     const nPoints = 1000;
     const nPositionComponents = 2;
@@ -89,7 +81,7 @@ function createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
 
     for (let i = 0; i < length; i += 5) {
         theta += 10 * Math.PI / nPoints;
-        const r = 0.04+0.02*theta;
+        const r = 0.04 + 0.02 * theta;
         const { x, y } = polar2Cartesian(r, theta);
         spiral[i] = x;
         spiral[i + 1] = y;
@@ -107,19 +99,29 @@ function createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
 
     // animation constants
     let angle = scale = 0;
+    let startTime = Date.now();
+
     const animate = function () {
+
         ({ angle, scale } = updateTransformation(angle, scale));
 
-        // transform matrix and pass to attribute location
-        modelMatrix.setRotationMatrix(angle).scaleMatrix(1-scale, 1-scale, 0).translateMatrix(Tx, Ty, 0);
-        context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
+        if (Date.now() - startTime < ANIMATION_DURATION * 1000) {
 
-        // clear canvas and draw
-        clearCanvas(context, [.95, .62, .1, 1.0]);
-        context.drawArrays(context.LINE_LOOP, 0, nPoints);
+            // transform matrix and pass to attribute location
+            modelMatrix.setRotationMatrix(angle).scaleMatrix(1 - scale, 1 - scale, 0).translateMatrix(Tx, Ty, 0);
+            context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix.elements);
 
-        requestAnimationFrame(animate);
+            // clear canvas and draw
+            clearCanvas(context, [.95, .62, .1, 1.0]);
+            context.drawArrays(context.LINE_LOOP, 0, nPoints);
+
+            requestAnimationFrame(animate);
+        } else {
+            clearCanvas(context, [.97, .75, .27, 1]);
+        }
+        return;
     }
+
     animate();
 }
 
@@ -129,7 +131,7 @@ function updateTransformation(angle, scale) {
     TIMESTAMP = now;
 
     // rotate at x degrees per second`
-    angle = (angle + ROTATIONSPEED * timeElapsed / 1000) % 360;
+    angle = (angle + ROTATION_SPEED * timeElapsed / 1000) % 360;
 
     // map angle value to scale for convenience
     scale = 1 + 0.5 * Math.sin(angle * Math.PI / 180);
