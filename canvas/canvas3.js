@@ -9,6 +9,10 @@ let TIMESTAMP3 = Date.now();
 let CAMERAX3 = 0.25;
 let CAMERAY3 = 0.25;
 let CAMERAZ3 = 0.25;
+let TOPX3 = 0;
+let TOPY3 = 1;
+let TOPZ3 = 0;
+
 main3();
 
 function main3() {
@@ -26,48 +30,69 @@ function main3() {
         console.error('failed to initialize shaders');
         return;
     }
-    // vertex data and assign vertices
-    const nWavePoints = 1000;
-    const waveData = new Float32Array(nWavePoints * 6);
-    // return cartesian coordinates
+
+    // function that returns cartesian coordinates
     const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta) });
 
-    // populate flower vertices
-    let theta = 0;
+    // flower vertex data 
+    const nFlowerPoints = 1000;
+    const flowerData = new Float32Array(nFlowerPoints * 6);
+    let flowerTheta = 0;
 
-    for (let i = 0; i < nWavePoints * 6; i += 6) {
-        theta += 10 * Math.PI / nWavePoints;
-        const r = Math.sin(2.4 * theta) * Math.sin(2.4 * theta);
+    for (let i = 0; i < nFlowerPoints * 6; i += 6) {
+        flowerTheta += 10 * Math.PI / nFlowerPoints;
+        const r = Math.sin(2.5 * flowerTheta);
 
-        const { x, y } = polar2Cartesian(r, theta);
-        const z = r * Math.sin(theta);
+        const { x, y } = polar2Cartesian(r, flowerTheta);
+        const z = r * Math.sin(flowerTheta);
 
-        waveData[i] = x;
-        waveData[i + 1] = y;
-        waveData[i + 2] = z;
-        waveData[i + 3] = 0.98;
-        waveData[i + 4] = 0.95;
-        waveData[i + 5] = 0.92;
+        flowerData[i] = x;
+        flowerData[i + 1] = y;
+        flowerData[i + 2] = z;
+        flowerData[i + 3] = 0.98;
+        flowerData[i + 4] = 0.95;
+        flowerData[i + 5] = 0.92;
     }
 
-    const wavesData = new Float32Array(nWavePoints * 6 * 2);
-    wavesData.set(waveData);
-    wavesData.set(waveData, nWavePoints * 6);
+    // leaf data
+    const nLeafPoints = 1000;
+    const leafData = new Float32Array(nLeafPoints * 6);
+    let leafTheta = 0;
+
+    for (let i = 0; i < nLeafPoints * 6; i += 6) {
+        leafTheta += 2 * Math.PI / nLeafPoints;
+        const r = Math.sin(5 * leafTheta) * Math.sin(5 * leafTheta) + Math.sin(1.5 * leafTheta) * Math.sin(1.5 * leafTheta);
+
+        const { x, y } = polar2Cartesian(r, leafTheta);
+        const z = r * Math.sin(leafTheta);
+
+        leafData[i] = x;
+        leafData[i + 1] = y;
+        leafData[i + 2] = z;
+        leafData[i + 3] = 0.98;
+        leafData[i + 4] = 0.95;
+        leafData[i + 5] = 0.92;
+    }
+
+    const data = new Float32Array(flowerData.length+leafData.length);
+    data.set(flowerData);
+    data.set(leafData, flowerData.length);
 
     // data info
     const nPositionComponents = 3;
     const nColorComponents = 3;
     const nBytes = data.BYTES_PER_ELEMENT;
 
-    const wavesBuffer = new Buffer(context, waveData, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents]);
+    const dataBuffer = new Buffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents]);
 
-    wavesBuffer && wavesBuffer.useBuffer();
+    dataBuffer && dataBuffer.useBuffer();
 
     // model view matrix 
     const modelMatrix = new Matrix();
-    const viewMatrix = new Matrix().setViewMatrix([CAMERAX3, CAMERAY3, CAMERAZ3]);
+    const viewMatrix = new Matrix().setViewMatrix([CAMERAX3, CAMERAY3, CAMERAZ3
+    ]);
     const modelViewMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelViewMatrix');
-    const projectionMatrix=new Matrix().setBoxProjection(1,-1,1,-1,1,-1); 
+    const projectionMatrix = new Matrix().setBoxProjection(1, -1, 1, -1, 1, -1);
 
     // transformation data, speed in degrees per second
     let angle = 0;
@@ -77,11 +102,11 @@ function main3() {
     initSlider3();
     // event listener for keydown
     document.addEventListener('keydown', function (event) {
-        if (event.key == 'ArrowRight') CAMERAX += .1;
-        if (event.key == 'ArrowLeft') CAMERAX -= .1;
-        if (event.key == 'ArrowUp') CAMERAY += .1;
-        if (event.key == 'ArrowDown') CAMERAY -= .1;
-        viewMatrix.setViewMatrix([CAMERAX, CAMERAY, CAMERAZ]);
+        (event.key == 'ArrowRight') && (CAMERAX3 += .1);
+        (event.key == 'ArrowLeft') && (CAMERAX3 -= .1);
+        (event.key == 'ArrowUp') && (CAMERAY3 += .1, TOPY3 += .1, TOPZ3 += .1);
+        (event.key == 'ArrowDown') && (CAMERAY3 -= .1, TOPY3 -= .1, TOPZ3 -= .1);
+        viewMatrix.setViewMatrix([CAMERAX3, CAMERAY3, CAMERAZ3], [], []);
     });
 
     const animate3 = function () {
@@ -89,7 +114,7 @@ function main3() {
         ({ angle, scale } = updateTransformation3(angle, scale));
 
         // render graphics
-        render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, projectionMatrix, modelViewMatrixLocation);
+        render3(context, nFlowerPoints, nLeafPoints,angle, scale, modelMatrix, viewMatrix, projectionMatrix, modelViewMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate3);
@@ -97,17 +122,17 @@ function main3() {
     animate3();
 }
 
-function render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, projectionMatrix,modelViewMatrixLocation) {
+function render3(context, nFlowerPoints, nLeafPoints,angle, scale, modelMatrix, viewMatrix, projectionMatrix, modelViewMatrixLocation) {
     clearCanvas(context, [.85, .17, .27, 1.0]);
 
     // draw triangles
     modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, 0, nWavePoints);
+    context.drawArrays(context.LINE_LOOP, 0, nFlowerPoints);
 
-    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).translateMatrix(0, 0.5, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
+    modelMatrix.setScaleMatrix(scale / 6, scale / 6, scale / 6).rotateMatrix(angle).translateMatrix(0, 0.5, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, 0, nWavePoints);
+    context.drawArrays(context.LINE_LOOP, nFlowerPoints,nLeafPoints);
 
 }
 
