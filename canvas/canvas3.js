@@ -6,9 +6,9 @@
 let ROTATIONSPEED3 = 55;
 let TIMESTAMP3 = Date.now();
 // view matrix constants
-let CAMERAX3 = 0.25;
-let CAMERAY3 = 0.25;
-let CAMERAZ3 = 0.25;
+let CAMERAX3 = 0;
+let CAMERAY3 = 0;
+let CAMERAZ3 = 0;
 let TOPX3 = 0;
 let TOPY3 = 1;
 let TOPZ3 = 0;
@@ -74,9 +74,30 @@ function main3() {
         leafData[i + 5] = 0.92;
     }
 
-    const data = new Float32Array(flowerData.length+leafData.length);
+    const nStemPoints = 1000;
+    const stemData = new Float32Array(nStemPoints * 6);
+    let stemTheta = 0;
+    for (let i = 0; i < nStemPoints * 6; i += 6) {
+        stemTheta += 2 * Math.PI / nStemPoints;
+        const r = 0.5 / Math.sqrt((Math.sin(stemTheta) * Math.sin(stemTheta) + Math.cos(stemTheta) * Math.cos(stemTheta)));
+
+        const { x, y } = polar2Cartesian(r, stemTheta);
+        const z = r * Math.sin(stemTheta);
+
+        stemData[i] = x;
+        stemData[i + 1] = y;
+        stemData[i + 2] = z;
+        stemData[i + 3] = 0.98;
+        stemData[i + 4] = 0.95;
+        stemData[i + 5] = 0.92;
+    }
+
+
+
+    const data = new Float32Array(flowerData.length + leafData.length + stemData.length);
     data.set(flowerData);
     data.set(leafData, flowerData.length);
+    data.set(stemData, flowerData.length + leafData.length);
 
     // data info
     const nPositionComponents = 3;
@@ -114,7 +135,7 @@ function main3() {
         ({ angle, scale } = updateTransformation3(angle, scale));
 
         // render graphics
-        render3(context, nFlowerPoints, nLeafPoints,angle, scale, modelMatrix, viewMatrix, projectionMatrix, modelViewMatrixLocation);
+        render3(context, nFlowerPoints, nLeafPoints, nStemPoints, angle, scale, modelMatrix, viewMatrix, projectionMatrix, modelViewMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate3);
@@ -122,18 +143,25 @@ function main3() {
     animate3();
 }
 
-function render3(context, nFlowerPoints, nLeafPoints,angle, scale, modelMatrix, viewMatrix, projectionMatrix, modelViewMatrixLocation) {
+function render3(context, nFlowerPoints, nLeafPoints, nStemPoints, angle, scale, modelMatrix, viewMatrix, projectionMatrix, modelViewMatrixLocation) {
     clearCanvas(context, [.85, .17, .27, 1.0]);
 
-    // draw triangles
-    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
+    // draw flower
+    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle * 2).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nFlowerPoints);
 
-    modelMatrix.setScaleMatrix(scale / 6, scale / 6, scale / 6).rotateMatrix(angle).translateMatrix(0, 0.5, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
+    // draw leaf 0.5 below flower
+    modelMatrix.setScaleMatrix(scale / 6, scale / 6, scale / 6).rotateMatrix(angle * 2).translateMatrix(0, 0.4, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nFlowerPoints,nLeafPoints);
+    context.drawArrays(context.LINE_LOOP, nFlowerPoints, nLeafPoints);
 
+    // draw stem between leaf and flower
+    for (let Ty = 0.05; Ty < 0.4; Ty += 0.04) {
+        modelMatrix.setScaleMatrix(scale / 50, scale / 50, scale / 50).rotateMatrix(angle * 2).translateMatrix(0, Ty, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
+        context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+        context.drawArrays(context.LINE_LOOP, nFlowerPoints + nLeafPoints, nStemPoints);
+    }
 }
 
 function updateTransformation3(angle, scale) {
