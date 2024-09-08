@@ -129,6 +129,10 @@ Matrix.prototype.setViewMatrix = function ([cameraX = 0, cameraY = 0, cameraZ = 
 }
 
 Matrix.prototype.useViewMatrix = function (viewMatrix) {
+    if (!viewMatrix || arguments.length !== 1) {
+        console.error('useviewmatrix has no viewmatrix parameter');
+        return;
+    }
     this.mMultiply(viewMatrix);
     return this;
 }
@@ -149,14 +153,14 @@ Matrix.prototype.useViewMatrix = function (viewMatrix) {
 
 Matrix.prototype.setBoxProjection = function (right, left, top, bottom, far, near) {
 
-    if (right === left || top === bottom || far === near) {
-        throw 'invalid input to box projection';
+    if (arguments.length !== 6 || right === left || top === bottom || far === near) {
+        throw 'invalid input to setboxprojection';
     }
 
     // empty initialized matrix is already identity matrix
     // scale components
     this.elements[0] = 2 / (right - left);
-    this.elements[5] = 2(top - bottom);
+    this.elements[5] = 2 / (top - bottom);
     this.elements[10] = -2 / (far - near);
 
     // translation components
@@ -168,6 +172,10 @@ Matrix.prototype.setBoxProjection = function (right, left, top, bottom, far, nea
 }
 
 Matrix.prototype.useBoxProjection = function (projectionMatrix) {
+    if (!projectionMatrix || arguments.length !== 1) {
+        console.error('useboxprojection has no projectionmatrix parameter');
+        return;
+    }
     this.mMultiply(projectionMatrix);
     return this;
 }

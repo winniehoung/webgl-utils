@@ -64,9 +64,10 @@ function main3() {
     wavesBuffer && wavesBuffer.useBuffer();
 
     // model view matrix 
-    let modelMatrix = new Matrix();
-    let viewMatrix = new Matrix().setViewMatrix([CAMERAX3, CAMERAY3, CAMERAZ3]);
+    const modelMatrix = new Matrix();
+    const viewMatrix = new Matrix().setViewMatrix([CAMERAX3, CAMERAY3, CAMERAZ3]);
     const modelViewMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelViewMatrix');
+    const projectionMatrix=new Matrix().setBoxProjection(1,-1,1,-1,1,-1); 
 
     // transformation data, speed in degrees per second
     let angle = 0;
@@ -88,7 +89,7 @@ function main3() {
         ({ angle, scale } = updateTransformation3(angle, scale));
 
         // render graphics
-        render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
+        render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, projectionMatrix, modelViewMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate3);
@@ -96,15 +97,15 @@ function main3() {
     animate3();
 }
 
-function render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
+function render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, projectionMatrix,modelViewMatrixLocation) {
     clearCanvas(context, [.85, .17, .27, 1.0]);
 
     // draw triangles
-    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).useViewMatrix(viewMatrix);
+    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nWavePoints);
 
-    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).translateMatrix(0, 0.5, 0).useViewMatrix(viewMatrix);
+    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).translateMatrix(0, 0.5, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nWavePoints);
 

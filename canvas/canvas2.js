@@ -76,6 +76,7 @@ function main2() {
     // model matrix and its location
     const modelMatrix = new Matrix();
     const viewMatrix = new Matrix().setViewMatrix([CAMERAX2, CAMERAY2, CAMERAZ2]);
+    const projectionMatrix=new Matrix().setBoxProjection(1,-1,1,-1,1,-1);
 
     const modelViewMatrixLocation = context.getUniformLocation(context.shaderProgram, 'modelViewMatrix');
 
@@ -99,7 +100,7 @@ function main2() {
         ({ angle, scale } = updateTransformation2(angle, scale));
 
         // render graphics
-        render(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
+        render(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, projectionMatrix,modelViewMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate2);
@@ -107,22 +108,22 @@ function main2() {
     animate2();
 }
 
-function render(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
+function render(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, projectionMatrix,modelViewMatrixLocation) {
     // clear canvas
     clearCanvas(context, [.2, 0.31, 0.36, 1.0]);
 
     // draw flower 1 - reset transformation matrix and assign per frame rotation matrix data
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, 0).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints);
 
     // draw flower 2
-    modelMatrix.setRotationMatrix(angle / 2).scaleMatrix(scale / 2.5, scale / 2.5, 0).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle / 2).scaleMatrix(scale / 2.5, scale / 2.5, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints / nObjects, nPoints);
 
     // draw flower 3
-    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(scale / 3, scale / 3, 0).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(scale / 3, scale / 3, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints);
 
