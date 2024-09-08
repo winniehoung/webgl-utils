@@ -36,13 +36,15 @@ function main2() {
     // starting angle
     let theta = 0;
     // return cartesian coordinates
-    const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta), z: r * Math.sin(theta) });
+    const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta)});
 
     // populate flower vertices
     for (let i = 0; i < length; i += 6) {
         theta += 2 * Math.PI / nPoints;
         const r = Math.sin(6 * theta);
-        const { x, y, z } = polar2Cartesian(r, theta);
+
+        const { x, y } = polar2Cartesian(r, theta);
+        const z = r * Math.sin(theta)
         flower[i] = x;
         flower[i + 1] = y;
         flower[i + 2] = z;
@@ -110,17 +112,17 @@ function render(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatri
     clearCanvas(context, [.2, 0.31, 0.36, 1.0]);
 
     // draw flower 1 - reset transformation matrix and assign per frame rotation matrix data
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(1 - scale / 2.5, 1 - scale / 2.5, 0).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, 0).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints);
 
     // draw flower 2
-    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(1 - scale, 1 - scale, scale / 2).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle / 2).scaleMatrix(scale / 2.5, scale / 2.5, 0).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints / nObjects, nPoints);
 
     // draw flower 3
-    modelMatrix.setRotationMatrix(angle / 3).scaleMatrix(1 - scale / 3, 1 - scale / 3, 0).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(scale / 3, scale / 3, 0).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints);
 

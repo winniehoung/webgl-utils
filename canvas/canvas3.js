@@ -27,70 +27,40 @@ function main3() {
         return;
     }
     // vertex data and assign vertices
-    const data = new Float32Array([
-        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
-        0.5, 0.0,  0.3, 0.94, 0.95, 0.96,
-        0.5, 0.0,  1.0, 0.94, 0.95, 0.96,
-        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
-       -0.5, 0.0,  1.0, 0.94, 0.95, 0.96,
-        0.5, 0.0,  1.0, 0.94, 0.95, 0.96,
-       -0.5, 0.0,  1.0, 0.94, 0.95, 0.96,
-       -0.5, 0.0,  0.3, 0.94, 0.95, 0.96,
-        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
-       -0.5, 0.0,  0.3, 0.94, 0.95, 0.96,
-        0.5, 0.0,  0.3, 0.94, 0.95, 0.96,
+    const nWavePoints = 1000;
+    const waveData = new Float32Array(nWavePoints * 6);
+    // return cartesian coordinates
+    const polar2Cartesian = (r, theta) => ({ x: r * Math.cos(theta), y: r * Math.sin(theta) });
 
-        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
-        0.5, 0.9,  0.3, 0.94, 0.95, 0.96,
-        0.5, 0.9,  1.0, 0.94, 0.95, 0.96,
-        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
-       -0.5, 0.9,  1.0, 0.94, 0.95, 0.96,
-        0.5, 0.9,  1.0, 0.94, 0.95, 0.96,
-       -0.5, 0.9,  1.0, 0.94, 0.95, 0.96,
-       -0.5, 0.9,  0.3, 0.94, 0.95, 0.96,
-        0.0, 0.5,  0.8, 0.94, 0.95, 0.96,
-       -0.5, 0.9,  0.3, 0.94, 0.95, 0.96,
-        0.5, 0.9,  0.3, 0.94, 0.95, 0.96,
+    // populate flower vertices
+    let theta = 0;
 
-        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
-        1.0, 0.0,  0.3, 0.94, 0.95, 0.96,
-        1.0, 0.0,  1.0, 0.94, 0.95, 0.96,
-        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
-        0.0, 0.0,  1.0, 0.94, 0.95, 0.96,
-        1.0, 0.0,  1.0, 0.94, 0.95, 0.96,
-        0.0, 0.0,  1.0, 0.94, 0.95, 0.96,
-        0.0, 0.0,  0.3, 0.94, 0.95, 0.96,
-        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
-        0.0, 0.0,  0.3, 0.94, 0.95, 0.96,
-        1.0, 0.0,  0.3, 0.94, 0.95, 0.96,
+    for (let i = 0; i < nWavePoints*6; i += 6) {
+        theta += 10 * Math.PI / nWavePoints;
+        const r = Math.sin(2.4 * theta) * Math.sin(2.4 * theta);
 
-        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
-        1.0, 0.9,  0.3, 0.94, 0.95, 0.96,
-        1.0, 0.9,  1.0, 0.94, 0.95, 0.96,
-        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
-        0.0, 0.9,  1.0, 0.94, 0.95, 0.96,
-        1.0, 0.9,  1.0, 0.94, 0.95, 0.96,
-        0.0, 0.9,  1.0, 0.94, 0.95, 0.96,
-        0.0, 0.9,  0.3, 0.94, 0.95, 0.96,
-        0.5, 0.5,  0.8, 0.94, 0.95, 0.96,
-        0.0, 0.9,  0.3, 0.94, 0.95, 0.96,
-        1.0, 0.9,  0.3, 0.94, 0.95, 0.96,
-    ]);
+        const { x, y } = polar2Cartesian(r, theta);
+        const z = r * Math.sin(theta);
+
+        waveData[i] = x;
+        waveData[i + 1] = y;
+        waveData[i + 2] = z;
+        waveData[i + 3] = 0.98;
+        waveData[i + 4] = 0.95;
+        waveData[i + 5] = 0.92;
+    }
+
+    console.log(waveData);
 
     // data info
     const nPositionComponents = 3;
     const nColorComponents = 3;
-    const nPoints = data.length / (nPositionComponents+nColorComponents);
-    // divide by number of vertices in an object
-    const nObjects = nPoints / 11;
+    const nPoints = data.length / (nPositionComponents + nColorComponents);
     const nBytes = data.BYTES_PER_ELEMENT;
 
-    // buffer links to vertex shader
-    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents])) {
+    const wavesBuffer = new Buffer(context, waveData, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents]);
 
-        console.error('could not assign vertices');
-        return false;
-    }
+    wavesBuffer && wavesBuffer.useBuffer();
 
     // model view matrix 
     let modelMatrix = new Matrix();
@@ -114,10 +84,10 @@ function main3() {
 
     const animate3 = function () {
         // update transformation constants and render vertices
-        ({angle, scale} = updateTransformation3(angle, scale));
+        ({ angle, scale } = updateTransformation3(angle, scale));
 
         // render graphics
-        render3(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
+        render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation);
 
         // on 60hz browser, called 60 times/second
         requestAnimationFrame(animate3);
@@ -125,25 +95,14 @@ function main3() {
     animate3();
 }
 
-function render3(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
+function render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, modelViewMatrixLocation) {
     clearCanvas(context, [.85, .17, .27, 1.0]);
-    
+
     // draw triangles
-    modelMatrix.setScaleMatrix(scale / 2, scale / 2, scale / 2).rotateMatrix(angle).useViewMatrix(viewMatrix);
+    modelMatrix.setScaleMatrix(scale/2, scale/2, scale/2).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, 0, nPoints / nObjects);
+    context.drawArrays(context.LINE_LOOP, 0, nWavePoints);
 
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(scale / 2, scale / 2, scale / 2).useViewMatrix(viewMatrix);
-    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 1 / nObjects, nPoints / nObjects);
-
-    modelMatrix.setRotationMatrix(angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
-    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints / nObjects);
-
-    modelMatrix.setRotationMatrix(angle*2).scaleMatrix(scale / 4, scale / 4, scale / 4).useViewMatrix(viewMatrix);
-    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints * 3 / nObjects, nPoints / nObjects);
 }
 
 function updateTransformation3(angle, scale) {
@@ -155,16 +114,16 @@ function updateTransformation3(angle, scale) {
     angle = (angle + ROTATIONSPEED3 * timeElapsed / 1000) % 360;
 
     scale = 1 + Math.sin(angle * Math.PI / 180) * 0.5;
-    
-    return {angle, scale};
+
+    return { angle, scale };
 }
 
-function initSlider3(){
-    const slider=document.getElementById('slider');
-    const speed=document.getElementById('speed');
+function initSlider3() {
+    const slider = document.getElementById('slider');
+    const speed = document.getElementById('speed');
 
-    slider.addEventListener('input',function(){
-        ROTATIONSPEED3=parseFloat(slider.value);
-        speed.textContent=ROTATIONSPEED3;
+    slider.addEventListener('input', function () {
+        ROTATIONSPEED3 = parseFloat(slider.value);
+        speed.textContent = ROTATIONSPEED3;
     })
 }

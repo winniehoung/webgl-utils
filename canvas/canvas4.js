@@ -4,6 +4,7 @@
  * 
  * common bugs: 
  * uniformMatrix4fv(location,transpose=false,data)
+ * didn't reset model matrix in animation
  */
 
 // animation constants
@@ -87,17 +88,14 @@ function main4() {
     // data info
     const nPositionComponents = 3;
     const nColorComponents = 3;
-    const nPoints = data.length / (nPositionComponents+nColorComponents);
+    const nPoints = data.length / (nPositionComponents + nColorComponents);
     // divide by number of vertices in an object
     const nObjects = nPoints / 11;
     const nBytes = data.BYTES_PER_ELEMENT;
 
-    // buffer links to vertex shader
-    if (!initVertexBuffer(context, data, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents])) {
+    const buffer=new Buffer(context, data, ['vPosition','vColor'],[nPositionComponents,nColorComponents],nBytes*(nPositionComponents+nColorComponents),[0,nBytes*nPositionComponents]);
 
-        console.error('could not assign vertices');
-        return false;
-    }
+    buffer && buffer.useBuffer();
 
     // model view matrix 
     let modelMatrix = new Matrix();
