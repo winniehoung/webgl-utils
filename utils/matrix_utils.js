@@ -134,6 +134,45 @@ Matrix.prototype.useViewMatrix = function (viewMatrix) {
 }
 
 /**
+ * orthographic projection to handle clipping: 
+ * @param {number} right - positive x coord of viewing volume
+ * @param {number} left - negative x coord of viewing volume
+ * @param {number} top - positive y coord of viewing volume
+ * @param {number} bottom - negativ ey coord of viewing volume
+ * @param {number} far - positive z coord of viewing volume
+ * @param {number} near - negative z coord of viewing volume 
+ * 
+ * contains components:
+ * 1. scale to NDC 
+ * 2. translate world so center of view volume at origin
+ */
+
+Matrix.prototype.setBoxProjection = function (right, left, top, bottom, far, near) {
+
+    if (right === left || top === bottom || far === near) {
+        throw 'invalid input to box projection';
+    }
+
+    // empty initialized matrix is already identity matrix
+    // scale components
+    this.elements[0] = 2 / (right - left);
+    this.elements[5] = 2(top - bottom);
+    this.elements[10] = -2 / (far - near);
+
+    // translation components
+    this.elements[12] = -(right + left) / (right - left);
+    this.elements[13] = -(top + bottom) / (top - bottom);
+    this.elements[14] = -(far + near) / (far - near);
+
+    return this;
+}
+
+Matrix.prototype.useBoxProjection = function (projectionMatrix) {
+    this.mMultiply(projectionMatrix);
+    return this;
+}
+
+/**
  * @param {number} T - transform units;
  * @param {number} S - scale factor;
  * @param {number} angle - rotation angle;
