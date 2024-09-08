@@ -65,21 +65,21 @@ function createClickHandler() {
         vPoints.push([Tx, Ty]);
 
         // animation returns after ANIMATION DURATION
-        createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation);
+        createFlower(context, Tx, Ty, modelMatrix, modelMatrixLocation);
 
     }
 }
 
-function createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
+function createFlower(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
 
-    // spiral data info and populate vertices
+    // flower data info and populate vertices
     const nPoints = 1000;
     const nPositionComponents = 2;
     const nColorComponents = 3;
     // array length: nPoints * n components per point
     const length = nPoints * (nPositionComponents + nColorComponents);
-    const spiral = new Float32Array(length);
-    const nBytes = spiral.BYTES_PER_ELEMENT;
+    const flower = new Float32Array(length);
+    const nBytes = flower.BYTES_PER_ELEMENT;
     // starting angle
     let theta = 0;
 
@@ -90,15 +90,15 @@ function createSpiral(context, Tx, Ty, modelMatrix, modelMatrixLocation) {
         // const r = 0.04 + 0.02 * theta;
         const r=Math.sin(1.2*theta)*Math.sin(1.2*theta)+Math.cos(6*theta)*Math.cos(6*theta);
         const { x, y } = polar2Cartesian(r, theta);
-        spiral[i] = x;
-        spiral[i + 1] = y;
-        spiral[i + 2] = 0.98;
-        spiral[i + 3] = 0.95;
-        spiral[i + 4] = 0.92;
+        flower[i] = x;
+        flower[i + 1] = y;
+        flower[i + 2] = 0.98;
+        flower[i + 3] = 0.95;
+        flower[i + 4] = 0.92;
     }
 
     // init buffers and pass data to locations
-    if (!initVertexBuffer(context, spiral, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents])) {
+    if (!initVertexBuffer(context, flower, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents])) {
 
         console.error('could not initialize vertex buffer');
         return false;

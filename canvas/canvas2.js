@@ -57,7 +57,7 @@ function main2() {
     data = new Float32Array(length * 3);
     data.set(flower);
     data.set(flower, flower.length);
-    data.set(flower,flower.length*2);
+    data.set(flower, flower.length * 2);
 
     // data info
     const nPositionComponents = 3;
@@ -110,19 +110,19 @@ function render(context, nPoints, nObjects, angle, scale, modelMatrix, viewMatri
     clearCanvas(context, [.2, 0.31, 0.36, 1.0]);
 
     // draw flower 1 - reset transformation matrix and assign per frame rotation matrix data
-    modelMatrix.setRotationMatrix(angle).scaleMatrix(1-scale / 2, 1-scale / 2, 0).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle).scaleMatrix(1 - scale / 2.5, 1 - scale / 2.5, 0).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nPoints);
 
     // draw flower 2
-    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(1 - scale, 1 - scale, scale/2).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle / 4).scaleMatrix(1 - scale, 1 - scale, scale / 2).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, nPoints / nObjects, nPoints);
 
     // draw flower 3
-    modelMatrix.setRotationMatrix(angle / 3).scaleMatrix(1 - scale/4, 1 - scale/4, 0).useViewMatrix(viewMatrix);
+    modelMatrix.setRotationMatrix(angle / 3).scaleMatrix(1 - scale / 3, 1 - scale / 3, 0).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
-    context.drawArrays(context.LINE_LOOP, nPoints *2 / nObjects, nPoints);
+    context.drawArrays(context.LINE_LOOP, nPoints * 2 / nObjects, nPoints);
 
 }
 
