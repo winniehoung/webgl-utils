@@ -35,7 +35,7 @@ function main3() {
     // populate flower vertices
     let theta = 0;
 
-    for (let i = 0; i < nWavePoints*6; i += 6) {
+    for (let i = 0; i < nWavePoints * 6; i += 6) {
         theta += 10 * Math.PI / nWavePoints;
         const r = Math.sin(2.4 * theta) * Math.sin(2.4 * theta);
 
@@ -50,12 +50,13 @@ function main3() {
         waveData[i + 5] = 0.92;
     }
 
-    console.log(waveData);
+    const wavesData = new Float32Array(nWavePoints * 6 * 2);
+    wavesData.set(waveData);
+    wavesData.set(waveData, nWavePoints * 6);
 
     // data info
     const nPositionComponents = 3;
     const nColorComponents = 3;
-    const nPoints = data.length / (nPositionComponents + nColorComponents);
     const nBytes = data.BYTES_PER_ELEMENT;
 
     const wavesBuffer = new Buffer(context, waveData, ['vPosition', 'vColor'], [nPositionComponents, nColorComponents], nBytes * (nPositionComponents + nColorComponents), [0, nBytes * nPositionComponents]);
@@ -99,7 +100,11 @@ function render3(context, nWavePoints, angle, scale, modelMatrix, viewMatrix, mo
     clearCanvas(context, [.85, .17, .27, 1.0]);
 
     // draw triangles
-    modelMatrix.setScaleMatrix(scale/2, scale/2, scale/2).useViewMatrix(viewMatrix);
+    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).useViewMatrix(viewMatrix);
+    context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
+    context.drawArrays(context.LINE_LOOP, 0, nWavePoints);
+
+    modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle).translateMatrix(0, 0.5, 0).useViewMatrix(viewMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nWavePoints);
 
