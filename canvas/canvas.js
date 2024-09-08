@@ -6,7 +6,7 @@
 // degrees per second
 let ROTATION_SPEED = 50;
 let TIMESTAMP = Date.now();
-let ANIMATION_DURATION = 6;
+let ANIMATION_DURATION = 8;
 let ANIMATING = false;
 
 main(); // function hoisting in JS

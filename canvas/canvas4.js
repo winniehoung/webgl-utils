@@ -3,7 +3,6 @@
  * 'f' prefix for fragment
  * 
  * common bugs: 
- * set shader variables but didn't pass data to it
  * uniformMatrix4fv(location,transpose=false,data)
  */
 

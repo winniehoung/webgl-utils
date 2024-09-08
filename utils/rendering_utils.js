@@ -18,6 +18,7 @@ function clearCanvas(context, color) {
     context.clearColor(color[0], color[1], color[2], color[3]);
     context.clear(context.COLOR_BUFFER_BIT);
 }
+
 /** handles buffer initialization and enables vertex buffer
  *  @param {Float32Array} data
  *  @param {GLSL Built-in Variable} vPosition - vertex position attribute name
@@ -42,7 +43,7 @@ function initVertexBuffer(context, data, [vPosition = 'vPosition', vColor = ''] 
 
     context.bindBuffer(context.ARRAY_BUFFER, buffer);
     context.bufferData(context.ARRAY_BUFFER, data, context.STATIC_DRAW);
-    (context.getError()!==context.NO_ERROR) && console.error('could not bind buffer data');
+    (context.getError() !== context.NO_ERROR) && console.error('could not bind buffer data');
 
     // get position location, assign and enable buffer
     const positionLocation = context.getAttribLocation(context.shaderProgram, vPosition);
@@ -57,7 +58,69 @@ function initVertexBuffer(context, data, [vPosition = 'vPosition', vColor = ''] 
         context.vertexAttribPointer(colorLocation, nColorComponents, context.FLOAT, false, stride, colorOffset);
         context.enableVertexAttribArray(colorLocation);
     }
-    return true;
+    return buffer;
+}
+
+/**
+ * buffer prototype for dealing with multiple buffers
+ *  @param {Float32Array} data
+ *  @param {GLSL Built-in Variable} vPosition - vertex position attribute name
+ *  @param {number} nComponents - number of components per vertex
+ *  @param {number} stride - num bytes per vertex element in data
+ *  @param {number} offset - offset of vertex info in data
+ */
+
+const Buffer = function (context, data, [vPosition = 'vPosition', vColor = ''] = [], [nPositionComponents = 2, nColorComponents = 3] = [], stride, [positionOffset = 0, colorOffset = 0] = []) {
+
+    const buffer = context.createBuffer();
+
+    if (!buffer) {
+        console.error('could not create buffer');
+        return false;
+    }
+    this.context = context;
+    this.buffer = buffer;
+
+    context.bindBuffer(context.ARRAY_BUFFER, buffer);
+    context.bufferData(context.ARRAY_BUFFER, data, context.STATIC_DRAW);
+    (context.getError() !== context.NO_ERROR) && console.error('could not bind buffer data');
+
+    // get position location, assign and enable buffer
+    const positionLocation = context.getAttribLocation(context.shaderProgram, vPosition);
+    positionLocation === -1 && console.error('could not get ${vPosition} position location');
+    context.vertexAttribPointer(positionLocation, nPositionComponents, context.FLOAT, false, stride, positionOffset);
+    context.enableVertexAttribArray(location);
+
+    this.positionLocation = positionLocation;
+    this.nPositionComponents = nPositionComponents;
+    this.stride = stride;
+    this.positionOffset = positionOffset;
+
+    // get color location, assign and enable buffer
+    if (vColor) {
+        const colorLocation = context.getAttribLocation(context.shaderProgram, vColor);
+        colorLocation === -1 && console.error('could not get ${vColor} color location');
+        context.vertexAttribPointer(colorLocation, nColorComponents, context.FLOAT, false, stride, colorOffset);
+        context.enableVertexAttribArray(colorLocation);
+        this.colorLocation = colorLocation;
+        this.nColorComponents = nColorComponents;
+        this.colorOffset = colorOffset;
+    }
+}
+
+Buffer.prototype.useBuffer = function () {
+    this.context.bindBuffer(this.context.ARRAY_BUFFER, this.buffer);
+
+    // bind vertices to buffer
+    this.context.vertexAttribPointer(this.positionLocation, this.nPositionComponents, this.context.FLOAT, false, this.stride, this.positionOffset);
+    this.context.enableVertexAttribArray(this.positionLocation);
+
+    // bind color components to buffer
+    if ('colorLocation' in this) {
+        this.context.vertexAttribPointer(this.colorLocation, this.nColorComponents, this.context.FLOAT, false, this.stride, this.colorOffset);
+        this.context.enableVertexAttribArray(this.colorLocation);
+    }
+    return this;
 }
 
 /** handles shaders initialization
