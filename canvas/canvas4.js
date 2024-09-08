@@ -160,8 +160,8 @@ function updateTransformation4(angle, scale) {
     // rotate at x degrees per second`
     angle = (angle + ROTATIONSPEED4 * timeElapsed / 1000) % 360;
 
-    scale = 1 + Math.sin(angle * Math.PI / 180) * 0.5;
-    
+    // scale = 1 + Math.sin(angle * Math.PI / 180) * 0.5;
+    scale=angle*1.5/360;
     return {angle, scale};
 }
 
