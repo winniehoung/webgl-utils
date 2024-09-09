@@ -6,7 +6,10 @@
 - Use speed slider to change animation speed
 - Click on first canvas for a surprise (also try clicking arrow keys)
 
+
+<div style='text-align: center;'>
 <img src='assets/animation.gif' alt='animation' width='200' height='200'>
+</div>
 
 ### rendering_utils.js
 
