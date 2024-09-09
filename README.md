@@ -9,7 +9,7 @@
 
 
 
-<p align='center'>
+<p align='center'; margin: 20px>
 <img src='assets/animation.gif' alt='animation' width='200' height='200'>
 </p>
 
