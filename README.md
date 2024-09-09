@@ -4,7 +4,8 @@
 ### canvas.html
 - Example project utilizing rendering and matrix utils
 - Use speed slider to change animation speed
-- Click on first canvas for a surprise (also try clicking arrow keys)
+- Use arrow keys to rotate camera view
+
 
 
 
