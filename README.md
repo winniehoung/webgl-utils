@@ -6,15 +6,9 @@
 - Use speed slider to change animation speed
 - Use arrow keys to rotate camera view
 
-
-
-
-
 <p align='center'; margin: 20px>
 <img src='assets/animation.gif' alt='animation' width='200' height='200'>
 </p>
-
-
 
 ### rendering_utils.js
 
