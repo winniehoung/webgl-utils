@@ -6,6 +6,8 @@
 - Use speed slider to change animation speed
 - Click on first canvas for a surprise (also try clicking arrow keys)
 
+![Animation](assets/animate.gif)
+
 ### rendering_utils.js
 
 - Boilerplate for shader and buffer initialization
