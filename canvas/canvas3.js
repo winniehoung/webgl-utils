@@ -150,7 +150,6 @@ function render3(context, nFlowerPoints, nLeafPoints, nStemPoints, angle, scale,
     modelMatrix.setScaleMatrix(scale / 3, scale / 3, scale / 3).rotateMatrix(angle * 2).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
     context.uniformMatrix4fv(modelViewMatrixLocation, false, modelMatrix.elements);
     context.drawArrays(context.LINE_LOOP, 0, nFlowerPoints);
-    console.log('flower ' +modelMatrix.elements);
 
     // draw leaf 0.5 below flower
     modelMatrix.setScaleMatrix(scale / 6, scale / 6, scale / 6).rotateMatrix(angle * 2).translateMatrix(0, 0.4, 0).useViewMatrix(viewMatrix).useBoxProjection(projectionMatrix);
