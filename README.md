@@ -7,9 +7,13 @@
 - Click on first canvas for a surprise (also try clicking arrow keys)
 
 
+
+
 <p align='center'>
 <img src='assets/animation.gif' alt='animation' width='200' height='200'>
 </p>
+
+
 
 ### rendering_utils.js
 
