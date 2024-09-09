@@ -6,7 +6,7 @@
 - Use speed slider to change animation speed
 - Click on first canvas for a surprise (also try clicking arrow keys)
 
-![Animation](assets/animate.gif)
+![Animation](assets/animation.gif)
 
 ### rendering_utils.js
 
