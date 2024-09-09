@@ -7,9 +7,9 @@
 - Click on first canvas for a surprise (also try clicking arrow keys)
 
 
-<div style='text-align: center;'>
+<p align='center'>
 <img src='assets/animation.gif' alt='animation' width='200' height='200'>
-</div>
+</p>
 
 ### rendering_utils.js
 
