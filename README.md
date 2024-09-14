@@ -1,3 +1,6 @@
+### About WebGL
+- WebGL is a low level graphics rendering API that can be embedded directly in JavaScript and displayed on any browser that supports HTML5.
+
 ### Instructions
 - Save repository to file system, then open `canvas.html` in browser
 
