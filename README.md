@@ -26,7 +26,7 @@
 - Example project utilizing rendering and matrix utils
 - Use speed slider to change animation speed
 - Use arrow keys to rotate camera view
-- (The flowers are trig functions and the purple snowman is the Mandelbrot Set)
+
 
 <p align='center'; margin: 20px>
 <img src='assets/animation.gif' alt='animation' width='200' height='200'>
